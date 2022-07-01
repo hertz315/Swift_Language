@@ -116,3 +116,60 @@ while square < finalSquare {     // 0 < 25, 1 < 25, 11 < 25, 4 < 25, 8 < 25, 13 
     }
 }
 print("Game over!")
+
+
+var i: Int = 0
+while i < 10 {
+i += 1
+//cats가 10보다 작을때까지 아래 텍스트를 프린트 하지만,
+print("아이스크림을 더 많이 사고 싶습니다.")
+//만약 cats가 4가 되었을때는 아래와 같은 조건을 실행시킵니다.
+if i == 4 {
+    print("충분해!")
+    //실행되면 cats는 10이 되고 while문은 종료됩니다.
+    i = 10
+}
+}
+//아이스크림을 더 많이 사고 싶습니다.
+//아이스크림을 더 많이 사고 싶습니다.
+//아이스크림을 더 많이 사고 싶습니다.
+//아이스크림을 더 많이 사고 싶습니다.
+//충분해!
+
+var countDown = 10
+while countDown >= 0 {
+    print(countDown)
+    countDown -= 1
+    if countDown == 4 {
+        print("Let's go now!")
+        break
+    }
+}
+/*
+10
+9
+8
+7
+6
+5
+Let's go now!
+*/
+
+var number = 0
+
+repeat {
+    print(number)
+    number += 1
+} while number <= 20
+
+print("준비가 됐다면 시작할께요!")
+//20가지 카운트 후, 텍스트 출력
+
+var countdown: Int = 5
+
+repeat {
+    print("\(countdown)...")
+    countdown -= 1
+} while countdown > 0
+
+print("Lift off!")
