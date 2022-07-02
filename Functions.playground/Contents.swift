@@ -55,20 +55,51 @@ printWithoutCounting(string: "hello, world")
 // prints "hello, world" but doesn't return a value
 
 
-func minMax(array: [Int]) -> (min: Int, max: Int) {
-    var currentMin = array[0] //3
-    var currentMax = array[0] //3
-    array[1..<array.count]
+//func minMax(array: [Int]) -> (min: Int, max: Int) {
+//    var currentMin = array[0] //3
+//    var currentMax = array[0] //3
+//    array[1..<array.count]
+//    for value in array[1..<array.count] {
+//        if value < currentMin {     // 22 < 3, 44 < 3,  77 < 3
+//            currentMin = value
+//        } else if value > currentMax { //22 > 3, 44 > 22, 77 > 44
+//            currentMax = value         //currentMax == 77
+//        }
+//    }
+//    return (currentMin, currentMax)
+//}
+//
+//let bounds = minMax(array: [3,9,-17,21,55,82])
+//print("min is \(bounds.min) and max is \(bounds.max)")
+//// "min is -17 and max is 82"
+
+func minMax(array: [Int]) -> (min: Int, max: Int)? {
+    if array.isEmpty { return nil }
+    var currentMin = array[0]
+    var currentMax = array[0]
     for value in array[1..<array.count] {
-        if value < currentMin {     // 22 < 3, 44 < 3,  77 < 3
+        if value < currentMin {
             currentMin = value
-        } else if value > currentMax { //22 > 3, 44 > 22, 77 > 44
-            currentMax = value         //currentMax == 77
+        } else if value > currentMax {
+            currentMax = value
         }
     }
     return (currentMin, currentMax)
 }
 
-let bounds = minMax(array: [3,9,-17,21,55,82])
-print("min is \(bounds.min) and max is \(bounds.max)")
-// "min is -17 and max is 82"
+if let bounds = minMax(array: [8, -6, 2, 109, 3, 71]) {
+    print("min is \(bounds.min) and max is \(bounds.max)")
+}
+// min is -6 and max is 109
+
+func greeting(for person: String) -> String {
+    "Hello, " + person + "!"
+}
+print(greeting(for: "Dave"))
+// Prints "Hello, Dave!"
+
+func anotherGreeting(for person: String) -> String {
+    return "Hello, " + person + "!"
+}
+print(anotherGreeting(for: "Dave"))
+// Prints "Hello, Dave!"
