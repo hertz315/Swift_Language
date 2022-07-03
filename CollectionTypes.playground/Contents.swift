@@ -75,3 +75,49 @@ stringArray.lastIndex(of: "ios")
 if let index = stringArray.firstIndex(of: "ios") {
     print(index)
 }
+
+//========================================================
+
+var names: [String] = ["서근", "포뇨", "소피아", "하울", "유바바"]
+// var name: Array<String> = ["서근", "포뇨", "소피아", "하울", "유바바"] // 위 선언과 동일한 방법
+
+var emptyArray: [Any] = [] // 배열의 타입을 정확히 명시했다면 [] 만으로도 빈 배열 생성 가능
+//var emptyArray: [Any] = [Any]() // Any데이터를 요소로 갖는 빈 배열을 생성
+//var emptyArray: [Any] = Array<Any>()   // 위 선언과 동일한 방법
+
+print(emptyArray.isEmpty) // true
+
+print(names.count) // 5
+
+print(names[2]) // 소피아
+names[2] = "캘시퍼"
+print(names[2]) // 캘시퍼
+//print(names[5]) // error: Index out of range
+
+names.append("미진") //마지막에 "미진"이 추가됩니다.
+names.append(contentsOf: ["소울", "엘사"])
+print(names) // ["서근", "포뇨", "캘시퍼", "하울", "유바바", "미진", "소울", "엘사"]
+names.insert("지니", at: 2)// 인덱스 2에 추가됩니다.
+names.insert(contentsOf: ["해지", "땅콩"], at: 3) // 인덱스 3에 추가됩니다.
+print(names) // ["서근", "포뇨", "지니", "해지", "땅콩", "캘시퍼", "하울", "유바바", "미진", "소울", "엘사"]
+
+print(names.firstIndex(of: "서근")) // 0
+print(names.firstIndex(of: "라저")) // nil
+print(names.first) // 서근
+print(names.last) // 엘사
+
+names.removeFirst() // 서근 삭제
+names.removeLast() // 엘사 삭제
+print(names) // ["포뇨", "지니", "해지", "땅콩", "캘시퍼", "하울", "유바바", "미진", "소울"]
+
+
+let firstItem: String = names.removeFirst()
+let lastItem: String = names.removeLast()
+let indexZeroItem: String = names.remove(at: 0) //인덱스를 지정해서 삭제 가능
+
+print(firstItem) // 포뇨
+print(lastItem) // 소울
+print(indexZeroItem) // 지니
+print(names[1...4]) // ["땅콩", "캘시퍼", "하울", "유바바"]
+
+//========================================================
