@@ -73,3 +73,20 @@ enum Barcode {
 var productBarcode = Barcode.upc(8, 85909, 51226, 3)
 
 productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
+
+// switch와 함께 사용해서 케이스의 값들을 추출할 수 있다
+// 또한 여러값이 들어있는 연관 값들을 변수로 이름을 붙여 사용할수 있다
+switch productBarcode {
+case let .upc(numberSystem, manufacturer, product, check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check)")
+case let .qrCode(productCode):
+    print("QR code: \(productCode)")
+}
+
+enum ASCIIControlCharacter: Character {
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+
+
