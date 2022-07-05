@@ -215,15 +215,19 @@ var nums = [1,2,3,1,4,5,2,6,7,5,0]
 
 // 배열을 정리해보기
 
+
 // 1) 배열을 직접정렬하는 메서드 sort (동사)
 // 2) 정렬된 새로운 배열을 리턴 sorted (동사ing/동사ed)
 
-nums.sort()
+//nums.sort()
 var a = nums.sorted()
 a
-
+nums.sorted()
+nums.sort()
+nums.reverse()
+a.reversed()
 nums.reverse() // 요소를 역순으로 정렬
-var b = nums.reversed()
+//var b = nums.reversed()
 
 nums.sorted().reversed()
 // 새로운 배열은 생성하지 않고, 배열의 메모리는 공유하면서 역순으로 열거 할수 있는 형식을 리턴
