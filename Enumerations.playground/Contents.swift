@@ -15,8 +15,8 @@ enum CompassPoint {
 // (north, south, east, west)는 열거형의 케이스
 
 // 열거형을 한줄로 나타내기
-enum Planet {
-    case mercury, venus, earth, mars, jupiter, saturn, uranus, neptune
+enum Planet: Int {
+    case mercury = 1 , venus, earth, mars, jupiter, saturn, uranus, neptune
 }
 // 열거형 이름은 대문자로 짖는다.
 // 열거형에 복수형 이름이 아닌 단수형 이름을 지정한다
@@ -90,3 +90,43 @@ enum ASCIIControlCharacter: Character {
 }
 
 
+
+let possiblePlanet = Planet(rawValue: 7)
+// possiblePlanet is of type Planet? and equals Planet.uranus
+
+let positionToFind = 3
+if let somePlanet = Planet(rawValue: positionToFind) {
+    switch somePlanet {
+    case .earth:
+        print("Mostly harmless")
+    default:
+        print("Not a safe place for humans")
+    }
+} else {
+    print("There isn't a planet at position \(positionToFind)")
+}
+
+indirect enum ArithmeticExpression {
+    case number(Int)
+    case addition(ArithmeticExpression, ArithmeticExpression)
+    case multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+
+let five = ArithmeticExpression.number(5)
+let four = ArithmeticExpression.number(4)
+let sum = ArithmeticExpression.addition(five, four)
+let product = ArithmeticExpression.multiplication(sum, ArithmeticExpression.number(2))
+
+func evaluate(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case let .number(value):
+        return value
+    case .addition(let left, let right):
+        return evaluate(left) + evaluate(right)
+    case let .multiplication(left, right):
+        return evaluate(left) * evaluate(right)
+    }
+}
+
+print(evaluate(product))
+// Prints "18"
