@@ -62,7 +62,8 @@ var crimeCity: Movie = Movie(movieTitle: "범죄도시2", genre: "액션", leadA
 
 print(crimeCity.openingDate)
 print(crimeCity.leadActor[1])
-
+crimeCity.leadActor += ["윤계상"]
+print(crimeCity.leadActor)
 
 class Weather {
     // 저장 속성
