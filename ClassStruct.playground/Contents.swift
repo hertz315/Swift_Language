@@ -197,3 +197,80 @@ ppClass.name
 // aStruct.name = "Tiger"   // error
 aStruct.name
 // "동물"
+
+/*:
+ ---
+ ## 구조체, 클래스의 초기화
+ ---
+ */
+
+//:> 생성자(이니셜라이저)는 인스턴스를 만들때 사용하는 특별 메서드
+
+class Dog1 {
+    // 저장 속성
+    var name: String
+    var weight: Double
+    
+    // 생성자
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+    
+    func sit() {
+        print("\(self.name)가 앉았습니다")
+    }
+    
+    func layDown() {
+        print("\(self.name)가 누웠습니다")
+    }
+}
+
+var dog1 = Dog1(name: "위키", weight: 49.3)
+dog1.name   // "위키"
+dog1.weight // 49.3
+dog1.sit()  // "위키가 앉았습니다"
+dog1.layDown()  // "위키가 누웠습니다"
+
+
+
+
+/*:
+ ---
+ * 속성이 옵셔널 타입인 경우
+ ---
+ */
+class Dog3 {
+    var name: String?
+    var weight: Double
+    
+    init(weight: Double) {
+        self.weight = weight
+    }
+    
+    func sit() {
+        print("\(name)가 앉았습니다.")
+    }
+    
+    func layDown() {
+        print("\(name)가 누웠습니다")
+    }
+}
+
+var aDog = Dog3(weight: 3.3)
+print(aDog.name)
+// nil
+
+/*:
+ ---
+ * Identity Operators(식별 연산자)
+ ---
+ */
+
+// 식별 연산자 - 두개의 참조가 같은 인스턴스를 가르키고 있는지를 비교하는 방법
+
+// print(dog1 === dog2)
+// print(dog1 !== dog2)
+
+
+
