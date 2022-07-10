@@ -241,3 +241,32 @@ circle1.radius  // 15
 circle1.getArea(radius: 20) // 1256
 Circle1.count   // 1
 Circle1.multiPi // 6.28
+
+//:> 속성 감시자(Property Observer)
+
+class Profile {
+    // 저장 속성
+    var name: String
+    
+    // 저장 속성 감시자 (저장 속성이 변하는 시점을 관찰하는 메서드)
+    var statusMessage: String {
+        willSet {   // 바뀔 값이 newValue 파라미터로 전달
+            print("메세지가 \(statusMessage) 에서 \(newValue) 로 변경될 예정입니다")
+        } didSet {  // 바뀌기 전에 값이 oldValue 파라미터로 전달
+            print("메세지가 \(oldValue) 에서 \(statusMessage) 로 변경되었습니다")
+        }
+    }
+    
+    init(name: String, statusMessage: String) {
+        self.name = name
+        self.statusMessage = statusMessage
+    }
+    
+}
+
+var profile = Profile(name: "29짱", statusMessage: "Jerry")
+profile.name    // "29짱"
+print(profile.statusMessage)    // "Jerry"
+profile.statusMessage = "Tom"
+// 메세지가 Jerry 에서 Tom 로 변경될 예정입니다
+// 메세지가 Jerry 에서 Tom 로 변경되었습니다
