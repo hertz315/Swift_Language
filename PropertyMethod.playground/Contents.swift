@@ -126,3 +126,118 @@ pUpdate.bmi  // 24.489
 pUpdate.weight // 75
 pUpdate.bmi = 20
 pUpdate.weight // 61.25
+
+//:> 타입속성(Type Properties)
+
+// 1. 타입 저장 속성 , 2. 타입 계산 속성
+
+// 타입 저장 속성
+// static이라는 키워드를 추가한 저장 속성
+class Dog {
+    // 타입 저장 속성
+    static var species: String = "Dog"
+    
+    // 저장 속성
+    var name: String
+    var weight: Double
+    
+    // Initializer
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+}
+
+let dog: Dog = Dog(name: "위키", weight: 50)
+dog.name // "위키"
+dog.weight // 50
+Dog.species // "Dog"
+            // 반드시 타입(형식)의 이름으로 접근해야 함
+
+struct Circle {
+    
+    // 저장 타입 속성 (값이 항상 있어야 함)
+    static let pi: Double = 3.14
+    static var count: Int = 0
+    
+    // 저장 속성
+    var radius: Double
+    
+    // 계산 속성
+    var diameter: Double {
+        get {
+            return radius * 2
+        } set {
+            radius = newValue / 2
+        }
+    }
+    
+    // init
+    init(radius: Double) {
+        self.radius = radius
+        Circle.count += 1
+    }
+}
+
+var circle = Circle(radius: 3)
+circle.radius   // 3
+circle.diameter // 6
+circle.diameter = 10
+circle.radius   // 5
+Circle.count    // 1
+Circle.pi   // 3.14
+
+
+// ⭐️ 실제 사용 예시
+Int.max // 9223372036854775807
+Int.min // -9223372036854775808
+
+/*:
+ ---
+ */
+// 계산 타입(형식) 속성
+class Circle1 {
+    
+    // 저장 타입 속성
+    static let pi: Double = 3.14
+    static var count: Int = 0
+    
+    // 계산 타입 속성 (read-only)
+    static var multiPi: Double {
+        return pi * 2
+    }
+    
+    // 계산 속성
+    var diameter: Double {
+        get {
+            return radius * 2
+        } set {
+            radius = newValue / 2
+        }
+    }
+    
+    // 저장 속성
+    var radius: Double
+    
+    // init
+    init(radius: Double) {
+        self.radius = radius
+        Circle1.count += 1
+    }
+    
+    // 넓이 구하기 == 파이 곱하기 반지름 제곱
+    func getArea(radius: Double) -> Double {
+        // 타입이름으로 접근해야함
+        let area: Double = Circle1.pi * radius * radius
+        return area
+    }
+    
+}
+
+let circle1: Circle1 = Circle1(radius: 10)
+circle1.diameter    // 20
+circle1.diameter = 30
+circle1.radius  // 15
+circle1.getArea(radius: 20) // 1256
+Circle1.count   // 1
+Circle1.multiPi // 6.28
