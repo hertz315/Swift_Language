@@ -340,3 +340,83 @@ var bori: DogHabit1 = DogHabit1(name: "위키", weight: 33)
 
 bori.changeName("위키키")
 bori.name   // "위키키"
+
+//:> 타입 메서드(Type Method)
+
+// 메서드이지만, 인스턴스의 성격이 아닌 타입 자체의 성격에 가가운 메서드 일때 사용
+
+class TypeMethod {
+    static let species = "Dog"
+    
+    var name: String
+    var weight: Double
+    
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+    
+    func sit() {
+        print("\(name)가 앉았습니다")
+    }
+    
+    func trainning() {
+        print("월월 저는 \(TypeMethod.species)입니다.")
+        sit()
+        sit()
+        self.sit()
+    }
+    
+    func changeName(_ name: String) {
+        self.name = name
+    }
+    
+    static func letMeKnow() {
+        print("종은 항상 \(species)입니다")
+    }
+}
+
+let dogWiki = TypeMethod(name: "위키", weight: 33)
+dogWiki.sit()
+// "위키가 앉았습니다"
+dogWiki.changeName("wiki")
+TypeMethod.letMeKnow()
+// "종은 항상 Dog입니다
+
+/*:
+ ---
+ * 실제, 타입 메서드 사용 예시
+ ---
+ */
+
+Int.random(in: 1...10)
+
+Double.random(in: 1.2...3.7)
+
+/*:
+ ---
+ * 클래스 - 타입 메서드의 상속
+ ---
+ */
+
+// 타입 메서드를 상속시 재정의가능 하도록 하려면 -> static 키워드를 상속가능한 class 키워드로 바꿔야 함
+
+// 상위 클래스
+
+class SomeClass {
+    class func someTypeMethod() {
+        print("타입과 관련된 공통된 기능의 구현")
+    }
+}
+
+SomeClass.someTypeMethod()
+
+// 상속한 서브클래스
+
+class SomeSubClass: SomeClass {
+    override class func someTypeMethod() {
+        print("타입과 관련된 공통된 기능의 구현(업그레이드)")
+    }
+}
+
+SomeSubClass.someTypeMethod()
