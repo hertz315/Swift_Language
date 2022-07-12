@@ -68,3 +68,55 @@ enum AirConditioner {
 
 var airconOn = AirConditioner.Power.On
 
+//:> 타입 메서드
+
+//아래 예제는 LevelTracker라는 구조체를 정의함. 이 구조체는 플레이어의 게임의 다른 레벨이나 스테이지로의 진행을 추적함. 단일 플레이어 게임은 단일 기기 상에서 여러 플레이어의 정보를 저장함.
+//
+//모든 게임 레벨은 처음에 실행하면 잠겨져 있음. 플레이어가 레벨을 마칠때 마다 기기 상의 모든 플레이어를 풀어줌. LevelTracker 구조체는 정적 속성과 메소드를 사용하며 게임 레벨을 풀어주도록 추적하고 유지함.
+
+struct LevelTracker {
+    static var highestUnlockedLevel = 1
+    var currentLevel = 1
+
+    static func unlockLevel(_ level: Int) {
+        if level > highestUnlockedLevel { highestUnlockedLevel = level }
+    }
+
+    static func levelIsUnlocked(_ level: Int) -> Bool {
+        return level <= highestUnlockedLevel
+    }
+
+    
+    mutating func advanceToLevel(to level: Int) -> Bool {
+        if LevelTracker.levelIsUnlocked(level) {
+            currentLevel = level
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+
+class Player {
+    var tracker = LevelTracker()
+    let playerName: String
+    func completeLevel(level: Int) {
+        LevelTracker.unlockLevel(level + 1)
+        tracker.advanceToLevel(to: level + 1)
+    }
+    init(playerName: String) {
+        self.playerName = playerName
+    }
+}
+
+var player = Player(playerName: "Tom")
+player.completeLevel(level: 2)
+print("highest unlocked level is now \(LevelTracker.highestUnlockedLevel)")
+
+player = Player(playerName: "Jerry")
+if player.tracker.advanceToLevel(to: 6) {
+    print("Player is now on level 6")
+} else {
+    print("level 6 hasn't yet been unlocked")
+}
