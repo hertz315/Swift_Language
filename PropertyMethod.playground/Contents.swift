@@ -518,3 +518,17 @@ case .neptune:
 }
 
 // "earth 입니다"
+
+//:> 접근 제어
+
+class SomeClass1 {
+    private var name: String = "이름"
+    
+    func nameChange(name: String) {
+        self.name = name
+    }
+}
+
+var s = SomeClass1()
+s.nameChange(name: "홍")
+
