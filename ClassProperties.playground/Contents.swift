@@ -64,3 +64,46 @@ print(initialSquareCenter)
 square.center = Point(x: 20, y: 30)
 square.origin.x
 square.origin.y
+
+//:> 속성 감시자
+
+class StepCounter {
+    
+    var totalSteps: Int {
+        willSet {   // 바뀔값이 newValue 파라미터로 전달
+            print("About to set totalSteps to \(newValue)")
+        }
+        didSet {    // 바뀌기 전에 값이 oldValue 파라미터로 전달
+            if totalSteps > oldValue {
+                print("Added \(totalSteps - oldValue) steps")
+            } else if totalSteps < oldValue {
+                print("어제보다 더 조금 걸었습니다 분발하세요")
+            }
+        }
+    }
+    
+    init(totalSteps: Int) {
+        self.totalSteps = totalSteps
+    }
+    
+}
+
+let stepCounter = StepCounter(totalSteps: 100)
+print(stepCounter.totalSteps) // 100
+
+stepCounter.totalSteps = 300
+// About to set totalSteps to 300
+// Added 200 steps
+
+stepCounter.totalSteps = 1000
+// About to set totalSteps to 1000
+// Added 700 steps
+
+stepCounter.totalSteps = 600
+// About to set totalSteps to 600
+// 어제보다 더 조금 걸었습니다 분발하세요
+
+stepCounter.totalSteps = 700
+// About to set totalSteps to 700
+// Added 100 steps
+
