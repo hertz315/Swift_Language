@@ -270,3 +270,73 @@ print(profile.statusMessage)    // "Jerry"
 profile.statusMessage = "Tom"
 // 메세지가 Jerry 에서 Tom 로 변경될 예정입니다
 // 메세지가 Jerry 에서 Tom 로 변경되었습니다
+
+//:> 인스턴스 메서드(instance method)
+
+// 클래스의 인스턴스 메서드
+
+class DogHabit {
+    // 저장 속성
+    var name: String
+    var weight: Double
+    
+    // 생성자
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+    
+    // 인스턴스 메서드
+    func sit() {
+        print("\(name)가 앉았습니다")
+    }
+    
+    func layDown() {
+        print("\(name)가 누웠습니다")
+    }
+    
+    func play() {
+        print("열심히 놉니다.")
+    }
+    
+    func changeName(newName name: String) {
+        self.name = name
+    }
+    
+}
+
+let wiki = DogHabit(name: "wiki", weight: 50)
+
+wiki.sit()  // "wiki가 앉았습니다"
+wiki.play() // "열심히 놉니다."
+wiki.changeName(newName: "위키")
+wiki.sit()  // "위키가 앉았습니다"
+
+// 구조체의 인스턴스 메서드(Instance Methods)
+
+// 값 타임(구조체, 열거형)에서 기본적으로 인스턴스 메서드 내에있는 속성을 수정할수 없음
+// 수정하려면, mutating(변형되는)키워드를 붙이면 속성 수정이 가능해짐(클래스와 구조체의 차이)
+// 함수에서의 오버로딩과 동일하게, 클래스, 구조체, 열거형의 메서드에서도 오버로딩을 지원
+
+struct DogHabit1 {
+    var name: String
+    var weight: Double
+    
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+    
+    func sit() {
+        print("\(name)가 앉았습니다")
+    }
+    
+    mutating func changeName(_ name: String) {
+        self.name = name
+    }
+}
+
+var bori: DogHabit1 = DogHabit1(name: "위키", weight: 33)
+
+bori.changeName("위키키")
+bori.name   // "위키키"
