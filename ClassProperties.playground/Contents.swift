@@ -107,3 +107,21 @@ stepCounter.totalSteps = 700
 // About to set totalSteps to 700
 // Added 100 steps
 
+//:> 타입 속성
+
+struct AudioChannel {
+    // 오디오 레벨이 취할수 있는 최대 임계값
+    static let thresholdLevel = 10
+    static var maxInputLevelForAllChannels = 0
+    var currentLevel: Int = 0 {
+        didSet {
+            if currentLevel > AudioChannel.thresholdLevel {
+                currentLevel = AudioChannel.thresholdLevel
+            }
+            if currentLevel > AudioChannel.maxInputLevelForAllChannels {
+                AudioChannel.maxInputLevelForAllChannels = currentLevel
+            }
+        }
+    }
+}
+
