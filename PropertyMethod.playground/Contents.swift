@@ -532,3 +532,40 @@ class SomeClass1 {
 var s = SomeClass1()
 s.nameChange(name: "홍")
 
+//:> 싱글톤 패턴
+
+class UIbirthday {
+    // 싱글톤 패턴
+    static let singleton = UIbirthday()
+    // 저장 속성 초기화
+    var screenCount: Int = 1
+    var screenBrightness: String = "70%"
+    
+    // 객체 생성 금지
+    private init() {}
+    
+}
+
+// static let 변수에 접근시 유일한 객체가 생성되고 데이터가 메모리에 lazy 하게 올라감
+UIbirthday.singleton
+
+var screen = UIbirthday.singleton
+screen.screenBrightness // "70%"
+
+screen.screenBrightness = "90%"
+
+UIbirthday.singleton.screenBrightness // "90%"
+
+/*:
+ ---
+ * 실제 사용 예시
+ ---
+ */
+
+let iosScreen = UIScreen.main    // 화면
+let userDefaults = UserDefaults.standard    // 한번생성된 후, 계속 메모리에 남음!!!
+let application = UIApplication.shared   // 앱
+let fileManager = FileManager.default    // 파일
+let notification = NotificationCenter.default   // 노티피케이션(특정 상황, 시점을 알려줌)
+
+
