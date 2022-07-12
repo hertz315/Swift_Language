@@ -420,3 +420,101 @@ class SomeSubClass: SomeClass {
 }
 
 SomeSubClass.someTypeMethod()
+
+//:> 서브스크립트 메서드
+
+class SomeData {
+    var datas = [33, 22, 37, 41, 52]
+    
+    subscript(index: Int) -> Int {
+        get{
+            return datas[index]
+        }
+        set(parameter) {
+            datas[index] = parameter
+        }
+    }
+}
+
+var data = SomeData()
+data[3] // 41
+data[3] = 22
+data[3] // 22
+
+// 파라미터 생략 불가(값이 반드시 필요)
+// 리턴형도 생략 불가능(저장할 값의 타입 명시 필요)
+// 읽기 전용(read-only)으로 선언가능 (set블록은 선택적으로 구현가능하고, 쓰기 전용으로의 선언은 불가)
+
+// 서브스크립트 사용 예시 - 대괄호 형태로 사용하는 메서드
+
+struct TimeTable {
+    var multiplier: Int = 3
+    
+    subscript(index: Int) -> Int {
+        get {
+            return multiplier * index
+        }
+    }
+}
+
+let threeMultiplier: TimeTable = TimeTable()
+
+print("6 X 3 을 하면 \(threeMultiplier[6])이 나옵니다")
+// "6 X 3 을 하면 18이 나옵니다"
+
+struct Matrix {
+    // 2차원 배열
+    var data = [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"]]
+    
+    // 2개의 파라미터를 받는 읽지 전용 서브스크립트 구현
+    subscript(row: Int, column: Int) -> String? {
+        get {
+            if 2 < row || 2 < column {
+                return nil
+            }
+            return data[row][column]
+        }
+    }
+}
+
+var mat = Matrix()
+
+mat[0, 1]   // "2"
+
+/*:
+ ---
+ * 타입 서브스크립트(Type Subscripts)
+ ---
+ */
+
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+    
+    static subscript(n: Int) -> Self {
+        return Self(rawValue: n)!
+    }
+}
+
+
+let planet: Planet = Planet[3]
+
+switch planet {
+case .mercury:
+    print("mercury 입니다")
+case .venus:
+    print("venus 입니다")
+case .earth:
+    print("earth 입니다")
+case .mars:
+    print("mars 입니다")
+case .jupiter:
+    print("jupiter 입니다")
+case .saturn:
+    print("saturn 입니다")
+case .uranus:
+    print("uranus 입니다")
+case .neptune:
+    print("neptune 입니다")
+}
+
+// "earth 입니다"
