@@ -470,8 +470,12 @@ class BBBClass: AAAClass {
     var z: Int
     
     init(x: Int, y: Int, z: Int) {
-        self.z = z  // ⭐️ (필수)
-        super.init(x: x, y: y)  // ⭐️ (필수) 상위클래스 지정생성자 호출
+        self.z = z                 // ⭐️ (필수)
+        //self.y = y               // 불가 (메모리 셋팅 전)
+        super.init(x: x, y: y)     // ⭐️ (필수) 상위클래스의 지정생성자 호출
+        //self.z = 7
+        //self.y = y
+        //self.doSomething()
     }
     
     convenience init(z: Int) {
