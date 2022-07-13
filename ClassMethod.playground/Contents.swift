@@ -74,19 +74,24 @@ var airconOn = AirConditioner.Power.On
 //
 //모든 게임 레벨은 처음에 실행하면 잠겨져 있음. 플레이어가 레벨을 마칠때 마다 기기 상의 모든 플레이어를 풀어줌. LevelTracker 구조체는 정적 속성과 메소드를 사용하며 게임 레벨을 풀어주도록 추적하고 유지함.
 
+// LevelTracker 구조체는 어떤 플레이어가 푼 레벨 중 가장 높은 레벨의 트랙을 추적 유지함
+
 struct LevelTracker {
     static var highestUnlockedLevel = 1
     var currentLevel = 1
 
+    // 첫번째 타입 함수는 unlockLevel로, 새로운 값이 풀릴때 highestUnlockedLevel 값이 갱신됨
     static func unlockLevel(_ level: Int) {
-        if level > highestUnlockedLevel { highestUnlockedLevel = level }
+        if level > highestUnlockedLevel {
+            highestUnlockedLevel = level
+        }
     }
-
+    // 두번째는 levelIsUnlocked라는 편리한 타입 함수로, 특정 레벨이 이미 풀렸다면 true를 반환함.
     static func levelIsUnlocked(_ level: Int) -> Bool {
         return level <= highestUnlockedLevel
     }
 
-    
+    // 이 메소드는 currentLevel를 갱신하기 전에 새로운 레벨이 열렸는지 확인 요청함. advanceToLevel 메소드는 currentLevel이 실제로 설정되는지 아닌지 나타내기 위해 논리값을 반환함.
     mutating func advanceToLevel(to level: Int) -> Bool {
         if LevelTracker.levelIsUnlocked(level) {
             currentLevel = level
@@ -101,6 +106,7 @@ struct LevelTracker {
 class Player {
     var tracker = LevelTracker()
     let playerName: String
+    // completedLevel이라는 메소드는 특정 레벨을 플레이어가 완료할 때마다 호출됨. 이 메소드는 모든 플레이어를 위한 다음 레벨을 풀며 다음 레벨로 플레이어의 진행을 이동하도록 갱신함.
     func completeLevel(level: Int) {
         LevelTracker.unlockLevel(level + 1)
         tracker.advanceToLevel(to: level + 1)
@@ -111,12 +117,14 @@ class Player {
 }
 
 var player = Player(playerName: "Tom")
-player.completeLevel(level: 2)
-print("highest unlocked level is now \(LevelTracker.highestUnlockedLevel)")
+player.tracker.currentLevel // 1
+player.tracker.advanceToLevel(to: 3)    // false
 
-player = Player(playerName: "Jerry")
-if player.tracker.advanceToLevel(to: 6) {
-    print("Player is now on level 6")
-} else {
-    print("level 6 hasn't yet been unlocked")
-}
+LevelTracker.highestUnlockedLevel   // 1
+LevelTracker.unlockLevel(3)
+LevelTracker.highestUnlockedLevel   // 3
+
+player.completeLevel(level: 4)
+LevelTracker.highestUnlockedLevel   // 5
+player.tracker.currentLevel // 5
+player.tracker.advanceToLevel(to: 5)    // true
