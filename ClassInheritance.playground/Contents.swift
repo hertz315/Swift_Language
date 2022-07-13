@@ -359,3 +359,141 @@ color2.blue // 1.1
  - 개발자가 직접적으로 생성자를 구현하면, 멤버와이즈 이니셜라이저가 자동으로 제공되지 않음 ⭐️
    (멤버와이즈 이니셜라이저는 편의적 기능일뿐)
  ==============================================================**/
+
+//:> 생성자
+
+/**=======================================
+ - (지정)생성자   <=====>  편의 생성자
+
+
+ [구조체의 생성자]
+ - 1) 지정 생성자, (자동제공되는 멤버와이즈생성자)
+ - 2) 실패가능생성자
+
+
+ [클래스의 생성자]
+ - 1) 지정 생성자
+ - 2) 편의 생성자  (상속과 관련)
+ - 3) 필수 생성자  (상속과 관련)
+ - 4) 실패가능생성자
+=========================================**/
+
+struct InitColor {
+    let red, green, blue: Double
+    
+    init() {
+        red = 0.0
+        green = 0.0
+        blue = 0.0
+    }
+    
+    init(white: Double) {
+        self.red = white
+        self.green = white
+        self.blue = white
+    }
+    
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+}
+
+struct InitColor1 {
+    let red, green, blue: Double
+    
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+    
+    init(white: Double) {
+        self.init(red: white, green: white, blue: white)
+    }
+    
+    init() {
+        self.init(white: 0.0)
+    }
+}
+
+var initColor1 = InitColor1()
+initColor1.blue
+initColor1.red
+
+var initColorWhite = InitColor1(white: 3.3)
+initColorWhite.blue
+initColorWhite.red
+
+//:> 클래스의 지정(Designated) VS 편의 생성자(Convenience)
+
+class InitClassColor {
+    let red, green, blue, yellow: Double
+    
+    init(red: Double, green: Double, blue: Double, yellow: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.yellow = yellow
+    }
+    
+    convenience init(white: Double) {
+        self.init(red: white, green: white, blue: white, yellow: white)
+    }
+    
+    convenience init() {
+        self.init(red: 0.0, green: 0.0, blue: 0.0, yellow: 0.0)
+    }
+}
+
+//:> 클래스의 상속과 지정/편의 생성자 사용 예시
+
+class AAAClass {
+    var x: Int
+    var y: Int
+    
+    // 지정생성자 - 모든 저장속성을 설정
+    init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
+    
+    // 편의생성자 - (조금 편리하게 생성) 모든 저장속성을 설정하지 않음
+    convenience init(x: Int) {
+        self.init(x: x, y: 10)
+    }
+}
+
+class BBBClass: AAAClass {
+    
+    var z: Int
+    
+    init(x: Int, y: Int, z: Int) {
+        self.z = z  // ⭐️ (필수)
+        super.init(x: x, y: y)  // ⭐️ (필수) 상위클래스 지정생성자 호출
+    }
+    
+    convenience init(z: Int) {
+        self.init(x: 0, y: 0, z: z)
+    }
+    
+    convenience init() {
+        self.init(z: 0)
+    }
+    
+    convenience init(y: Int) {
+        self.init(z: y)
+    }
+    
+    func doSomething() {
+        print("Do something")
+    }
+}
+
+let a = BBBClass(x: 3, y: 5, z: 7)
+a.x // 3
+a.y // 5
+a.z // 7
+
+
