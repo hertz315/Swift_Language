@@ -501,3 +501,237 @@ a.y // 5
 a.z // 7
 
 
+//:> 클래스의 지정, 편의 생성자의 상속시 재정의 규칙
+
+// ⭐️ 하위클래스는 기본적으로 상위클래스 생성자를 상속하지 않고 재정의 하는 것이 원칙
+
+// 생성자 상속시 구현 규칙
+
+/**=============================================================
+// ☑️ 원칙: 1) 상위의 지정생성자(이름/파라미터)와 2) 현재단계의 저장속성을 고려해서 구현 ⭐️⭐️
+
+ 
+[1단계 - 상위 생성자에 대한 고려]
+
+ - 상위에 어떤 지정 생성자가 존재하는지?
+ - (상위) 지정 생성자 ===> 1) 하위클래스에서 지정 생성자로 재정의 가능
+ -                ===> 2) 하위클래스에서 편의 생성자로 재정의 가능
+ -                ===> 3) 구현 안해도됨(반드시 재정의하지 않아도 됨)
+
+ - (상위) 편의 생성자 ===> 재정의를 하지 않아도 됨 (호출 불가가 원칙이기 때문에 재정의 제공 안함)
+ -                ===> ⭐️ (만약에 동일한 이름을 구현했다면) 그냥 새로 정의한 것임
+
+
+[2단계 - (현재단계의) 생성자 구현]
+
+ - 1) 지정 생성자 내에서
+ -   ===> (1) 나의 모든 저장 속성을 초기화해야함
+ -   ===> (2) 슈퍼 클래스의 지정 생성자 호출
+
+ - 2) 편의 생성자 내에서
+ -   ===> 현재 클래스의 지정생성자 호출 해야함 (편의 생성자를 거치는 것은 상관없음)
+          (결국 지정 생성자만 모든 저장 속성을 초기화 가능)
+===============================================================**/
+
+class SupAClass {
+    var x = 0
+}
+
+// 상위의 지정생성자
+// init()
+
+class SubBClass: SupAClass {
+    
+    var y: Int
+    
+    // (선택 1) 지정생성자로 재정의
+    override init() {
+        self.y = 0
+        super.init()
+    }
+    
+    // (선택 2) 서브클래스에서 상위클래스의 지정생성자를 편의생성자로 재정의 해보기
+    // 현재 단계의 클래스에서 지정생성자를 호출해야하기 때문에 지정 생성자가 필요하다
+//    override convenience init() {
+//        self.init(y: 0)
+//    }
+    
+    init(y: Int) {
+        self.y = y
+        super.init()
+    }
+    
+}
+
+// 상위의 지정생성자⭐️
+// init(y: Int)
+// init()
+
+class SubCClass: SubBClass {
+    
+    var z: Int
+    
+    override init() {
+        self.z = 0
+        super.init()
+    }
+    
+    override convenience init(y: Int) {
+        self.init()
+    }
+    
+    init(z: Int) {
+        self.z = z
+        super.init()
+    }
+    
+}
+
+//:> 애플 공식 문서 예제로 복습
+
+class SupVehicle {
+    var numberOfWheels = 0
+    
+    var description: String {
+        return "\(numberOfWheels) wheel(s)"
+    }
+    
+    // init() {}
+}
+
+// numberOfWheels의 저장 속성에 기본값을 제공, 생성자 구현하지 않았으므로
+// ===> 기본 생성자 init() 자동제공
+
+// 상위의 지정생성자 ⭐️
+
+// 서브클래스 정의
+
+class SubBicycle: SupVehicle {
+    override init() {
+        super.init()
+        numberOfWheels = 2
+    }
+}
+
+
+// 상위의 지정생성자 ⭐️
+
+// 서브클래스 정의
+
+class HoverBoard: SupVehicle {
+    
+    var color: String
+    
+    // (읽기) 계산 속성 재정의
+    override var description: String {
+        return "\(super.description) in a beautiful \(color)"
+    }
+    
+    init(color: String) {
+        self.color = color
+        super.init()
+    }
+}
+
+let hoverboard = HoverBoard(color: "보라색")
+print("Hoverboard: \(hoverboard.description)")
+
+//:> 클래스 지정,편의 생성자 상속시 예외사항
+
+// 지정생성자 자동상속의 예외 사항 -> 저장속성의 기본값 설정
+
+/**============================================================
+ - 새 저장 속성이 아예 없거나, 기본값이 설정되어 있다면 (실패 가능성 배제)
+   ===> 슈퍼클래스의 지정생성자 모두 자동 상속(하위에서 어떤 재정의도 하지 않으면)
+===============================================================**/
+
+// 편의생성자 자동상속의 예외 사항 -> 상위지정생성자 모두 상속
+
+/**============================================================
+   (초기화 실패 가능성 배제시) 자동 상속
+ 
+ - (1) 지정 생성자 자동으로 상속하는 경우
+ - (2) 상위 지정생성자 모두 재정의 구현 (실패 가능성 배제)
+
+   (결국, 모든 지정생성자를 상속하는 상황이 되면 편의생성자는 자동으로 상속됨)
+===============================================================**/
+
+// 음식
+
+class Food {
+    var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    convenience init() {
+        self.init(name: "[Unnamed")
+    }
+}
+
+// 상위의 지정생성자
+// init(name: String)
+// 상위의 편의생성자
+// convenience init()
+
+// 레서피 재료
+
+class RecipeIngredient: Food {
+    var quantity: Int
+    
+    init(name: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(name: name)
+    }
+    
+    // 상위의 지정생성자를 하위의 클래스에서 편의 생성자로 재정의
+    override convenience init(name: String) {
+        self.init(name: name, quantity: 1)
+    }
+    
+    // 상위의 지정생성자 == init(name: String)을 모두 재정의 했으므로 편의생성자가 자동 상속됬다
+    // convenience init() {} // 자동 상속
+}
+
+let one = RecipeIngredient()
+one.name
+// "[Unnamed"
+
+
+// 상위의 지정생상자
+// init(name: String, quantity: Int)
+// 상위의 편의생성자
+// override convenience init(name: String)
+// convenience init() {}
+
+class ShoppingListItem: RecipeIngredient {
+    
+    // 새 저장 속성이 아예 없거나, 저장 속성의 기본값이 설정되어 있다
+    var purchased = false
+    
+    // 계산 속성 (메서드)
+    var description: String {
+        var output = "\(quantity) X \(name)"
+        output += purchased ? " ✔" : " ✘"
+        return output
+    }
+    
+    // init(name: String, quantity: Int) {}    // 지정생성자 모두 자동 상속
+    
+    // convenience init(name: String) {}       // 따라서 ====> 편의상속자도 모두 자동 상속됨
+    
+    // convenience init() {}                   // 따라서 ====> 편의상속자도 모두 자동 상속됨
+    
+}
+
+var breakfastList = [
+    ShoppingListItem(),
+    ShoppingListItem(name: "Bacon"),
+    ShoppingListItem(name: "Eggs", quantity: 6)
+]
+
+breakfastList[0].name   // "[Unnamed"
+breakfastList[2].name
+breakfastList[2].description
+
