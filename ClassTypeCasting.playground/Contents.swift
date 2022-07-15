@@ -154,3 +154,88 @@ let upcasting1 = Undergraduate()
 // upcasting as Undergraduate   // error
 upcasting1 as Person
 
+//:> 타입과 다형성(Polymorphism)
+
+class Pperson {
+    var id = 0
+    var name = "이름"
+    var email = "hertz315@gmail.com"
+    
+    func walk() {
+        print("사람이 걷는다.")
+    }
+}
+
+class Sstudent: Pperson {
+    // id
+    // name
+    // email
+    var studentId = 1
+    
+    override func walk() {
+        print("학생이 걷는다.")
+    }
+    
+    func study() {
+        print("학생이 공부한다.")
+    }
+}
+
+class Uundergraduate: Sstudent {
+    // id
+    // name
+    // email
+    // studentId
+    var major = "전공"
+    
+    override func walk() {
+        print("대학생이 걷는다.")
+    }
+    
+    override func study() {
+        print("대학생이 공부한다.")
+    }
+    
+    func party() {
+        print("대학생이 파티를 한다.")
+    }
+}
+    
+
+let pperson = Pperson()
+pperson.walk()
+// "사람이 걷는다."
+
+let sstudent = Sstudent()
+sstudent.walk()
+// "학생이 걷는다."
+
+let uundergraduate = Uundergraduate()
+uundergraduate.walk()
+// "대학생이 걷는다."
+
+//:> ⭐️ 다형성 (여러가지 모양)
+
+/**================================================================
+ [다형성(Polymorphism)]
+ - 하나의 객체(인스턴스)가 여러가지의 타입의 형태로 표현될 수 있음을 의미.
+   (또는 하나의 타입으로 여러 종류의 객체를 여러가지 형태(모습)로 해석될 수 있는 성격)
+ 
+ - 다형성이 구현되는 것은 "클래스의 상속"과 깊은 연관이 있음(향후 배울 프로토콜과도 연관)
+===================================================================**/
+
+let ppeople: [Pperson] = [Pperson(), Sstudent(), Uundergraduate()]
+
+for person in ppeople {
+    person.walk()
+}
+// 사람이 걷는다.
+// 학생이 걷는다.
+// 대학생이 걷는다.
+
+ppeople[0].walk()
+// 사람이 걷는다.
+ppeople[1].walk()
+// 학생이 걷는다.
+ppeople[2].walk()
+// 대학생이 걷는다.
