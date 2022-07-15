@@ -155,5 +155,52 @@ let aMarathon = 42.km + 195.m
 print("마라톤은 \(aMarathon) 미터의 길이임")
 // 마라톤은 42195.0 미터의 길이임
 
+//:> 멤버의 확장(메서드)
 
+// 타입 메서드의 확장
+extension Int {
+    static func printNumbersFrom1to5() {
+        for i in 1...5{
+            print(i)
+        }
+    }
+}
 
+Int.printNumbersFrom1to5()
+// 1
+// 2
+// 3
+// 4
+// 5
+
+// 인스턴스 메서드의 확장
+
+// String타입에 특정 프린트 구문 확장해보기
+
+extension String {
+    func printHelloRepetitions(of times: Int) {
+        for _ in 0..<times {
+            print("Hello \(self)!")
+        }
+    }
+}
+
+var name: String = "Tom"
+name.printHelloRepetitions(of: 3)
+// Hello Tom!
+// Hello Tom!
+// Hello Tom!
+
+//:> 구조체,열거형 에서 자신의 속성을 변경하는 메서드는 mutating 키워드가 필요하다
+
+// 제곱하는 메서드 만들어 보기
+
+extension Int {
+    mutating func square() {
+        self = self * self
+    }
+}
+
+var someInt = 3
+someInt.square()    // 9
+someInt // 9
