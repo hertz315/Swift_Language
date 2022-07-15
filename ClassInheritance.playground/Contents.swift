@@ -801,3 +801,132 @@ class UIBView: UIView {
     }
     
 }
+
+//:> 실패가능 생성자(Failable Initializers) - init?(파라미터)
+
+struct Animal {
+    let species: String
+    
+    init?(species: String) {
+        if species.isEmpty {return nil}
+        self.species = species
+    }
+    
+    //  error -> 오버로딩으로 실패가능/불가능을 구분 짓지 못함)
+//    init(species: String) {
+//        self.species = species
+//    }
+}
+
+let aa = Animal(species: "Giraffe")
+
+let bb = Animal(species: "")    // nil
+
+//:> 열거형의 실패가능 생성자 활용
+
+enum TemperatureUnit {
+    case Kelvin
+    case celsius
+    case fahrenheit
+    
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = .Kelvin
+        case "C":
+            self = .celsius
+        case "F":
+            self = .fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+
+let cc = TemperatureUnit.celsius
+
+let f = TemperatureUnit(symbol: "K")
+
+// 열거형의 원시값 설정 (실패가능 생성자의 구현과 유사)
+
+enum TemperatureUnit1: Character {
+    case Kelvin = "K"
+    case celsius = "C"
+    case fahrenheit = "F"
+}
+
+// 원시값이있는 열거형은 자동으로 실패가능 생성자 init?(rawValue :)를 구현함 일치하면 인스턴스 생성, 아니면 nil 리턴
+
+let f1 = TemperatureUnit1(rawValue: "F")
+f1.self // .fahrenheit
+let u = TemperatureUnit1(rawValue: "Z")
+u.self  // nil
+
+//:> 실패가능 생성자 - 상속관계에서 재정의 하기
+
+// ⭐️실패 가능 생성자의범위는 실패 불가능 생성자의 범위를 포함하는 개념이다
+//   실패 가능 생성자 범위 > 실패 불가능 생성자 범위
+
+/**===============================================================
+ - (상위)실패가능  ===> (하위)실패불가능  재정의 (OK)  (강제 언래핑 활용 가능)
+ - (상위)실패불가능 ===> (하위)실패가능   재정의  (X)
+ ===============================================================**/
+
+// 서류라는 클래스 정의
+
+class Doucument {
+    // 저장속성 nil 로 자동 초기화
+    var name: String?
+    
+    // 실패 불가능 생성자
+    init() {
+        self.name = nil
+    }
+    
+    // 실패가능 생성자
+    init?(name: String) {
+        // 실패가능 생성자는 같은 클래스의 실패불가능 생성자를 호출 할수있다(OK)
+        // 실패가능 생성자 --> 이름이 "" 빈문자열 일때
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+
+// 자동으로 이름지어지는 서류
+
+class AutomaticallyNamedDocument: Doucument {
+    
+    // 재정의 (상위) 실패불가능 --> (하위) 실패불가능
+    override init() {
+        super.init()
+        self.name = "[Untitled]"
+    }
+    
+    override init(name: String) {
+        // super.init(name: String) 호출불가
+        // 하위클래스의 실패 불가능 생성자는 상위클래스의 실패가능 생성자를 호출할수 없다
+        super.init()
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+        
+    }
+    
+}
+
+let autoDoc = AutomaticallyNamedDocument(name: "")
+autoDoc.name    // "[Untitled]"
+
+// 이름없는 (Untitled) 서류
+
+class UntitledDocument: Doucument {
+    
+    // 재정의 (상위) 실패불가능 =====> (하위) 실패불가능
+    override init(name: String) {
+        // 하위클래스의 실패불가능 생성자는 상위클래스의 실패가능 생성자를 호출 할수없다 (X)
+        super.init()
+        self.name = "[Untitle]"
+    }
+}
