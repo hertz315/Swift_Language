@@ -91,3 +91,66 @@ for someOne in people {
 
 // student1, student2, undergraduate1, undergraduate2
 print(studentNumber) // 4
+
+//:> as연산자
+
+/**===================================================================
+ - 타입캐스팅 / 타입캐스팅 연산자 (이항 연산자)
+ (1) Upcasting (업캐스팅)
+ - 인스턴스 as 타입
+ - 하위클래스의 메모리구조로 저장된 인스턴스를 상위클래스 타입으로 인식
+
+ (2) Downcasting (다운캐스팅) (실패가능성이 있음)
+ - 인스턴스 as? 타입  / 인스턴스 as! 타입
+   ▶︎ as? 연산자
+    - 참이면 반환타입은 Optional타입
+    - 실패시 nil 반환
+   ▶︎ as! 연산자
+    - 참이면 반화타입은 Optional타입의 값을 강제 언래핑한 타입
+    - 실패시 런타임 오류
+ 
+ [타입캐스팅의 의미]
+ - 인스턴스 사용시에 어떤 타입으로 사용할지(속성/메서드) 메모리구조에 대한 힌트를 변경하는 것
+ - 메모리의 값을 수정하는 것이 아님
+ - (단순히 해당 타입의 인스턴스인 것처럼 취급하려는 목적)
+======================================================================**/
+
+let person: Person = Undergraduate()
+person.id
+person.name
+person.email
+// person.studentId
+// person.major
+
+// 그런데, 왜 studentId 와 major 속성에는 접근이 되지 않을까? ⭐️
+
+// person변수에는 Person타입이 들어있다고 인식되는 것임
+// ===> 그래서 접근불가 ===> 접근하고 싶다면 메모리구조에 대한 힌트(타입)를 변경 필요
+
+//:> as? / as! (다운캐스팅)
+
+// - 인스턴스 as? 타입  / 인스턴스 as! 타입
+let ppp = person as? Undergraduate
+// 실패시 nil 리턴
+
+// if let 바인딩과 함께 사용 (옵셔널 언래핑)
+if let unwrapPerson = person as? Undergraduate {
+    unwrapPerson.id
+    unwrapPerson.name
+    unwrapPerson.email
+    unwrapPerson.studentId
+    unwrapPerson.major
+}
+
+let person3: Undergraduate = person as! Undergraduate
+person3.major
+// 실패시 error
+
+//:> upcasting(업캐스팅)
+
+let upcasting = Person()
+let upcasting1 = Undergraduate()
+
+// upcasting as Undergraduate   // error
+upcasting1 as Person
+
