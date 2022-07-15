@@ -930,3 +930,21 @@ class UntitledDocument: Doucument {
         self.name = "[Untitle]"
     }
 }
+
+//:> 소멸자(Deinitialers)
+
+class deinitAClass {
+    
+    var x = 0
+    var y = 0
+    
+    // 소멸자는 파라미터를 가질수 없다
+    // 소멸자는 클래스에 1개만 존재할수 있다
+    deinit {
+        print("인스턴스의 소멸 시점")
+    }
+}
+
+var aaa: deinitAClass? = deinitAClass()
+aaa = nil
+// "인스턴스의 소멸 시점"
