@@ -735,3 +735,69 @@ breakfastList[0].name   // "[Unnamed"
 breakfastList[2].name
 breakfastList[2].description
 
+//:> 필수 생성자
+
+class requiredAClass {
+    var x: Int
+    required init(x: Int) {
+        self.x = x
+    }
+    convenience init() {
+        self.init(x: 10)
+    }
+}
+
+// 클래스 생성자 앞에 required 키워드 사용시 상속받을 하위클래스의 생성자는 반드시 상위클래스의 필수 생성자를 구현 해야함
+
+class requiredBClass: requiredAClass {
+
+    var y: Int
+    
+    init(x: Int, y: Int) {
+        self.y = y
+        super.init(x: x)
+    }
+    
+    required init(x: Int) {
+        self.y = 0
+        super.init(x: x)
+    }
+}
+
+// 하위 클래스에서 상속받은 필수 생성자를 구현할 때는, 상위 필수생성자를 구현하더라도
+// override 키워드가 필요없고, required 키워드만 붙이면 된다
+
+// ⭐️ 필수생성자 자동 상속 조건: 상속받은 하위클래스에서 다른 지정 생성자를 구현 안하면 자동 상속된다
+
+class requiredCClass: requiredAClass {
+    init() {
+        super.init(x: 0)
+    }
+    
+    required init(x: Int) {
+        super.init(x: x)
+    }
+    
+}
+
+// init() 생성자를 구현하면, 자동 상속 조건을 벗어나기 때문에
+// required init(x: Int) 필수생성자를 구현해야 한다
+
+// 필수 생성자 사용 예시
+
+class UIAView: UIView {
+    //    required init?(coder: NSCoder) {         // 구현을 안해도 자동상속
+    //        fatalError("init(coder:) has not been implemented")
+    //    }
+}
+
+class UIBView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
