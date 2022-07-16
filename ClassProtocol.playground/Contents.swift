@@ -334,3 +334,66 @@ big.toggle()
 big.isOn    // true
 big.toggle()
 big.isOn    // false
+
+//:> 생성자 요구사항
+
+// 1) 정의
+protocol SomeProtocol {
+    init(num: Int)
+}
+
+// 예제 --- 1
+
+// 2) 채택 3) 구현
+class SomeClass: SomeProtocol {
+    required init(num: Int) {
+        // 구현
+    }
+}
+
+class SomeSubclass: SomeClass {
+    // ⭐️ 필수 생성자의 경우 하위클래스 에서 생성자를 구현 안하면 필수 생성자는 자동 상속 된다
+    // required init(num: Int) {}
+}
+
+// 예제 --- 2
+
+protocol AProtocol {
+    init()
+}
+
+class ASuperClass {
+    init() {}
+}
+
+// ASuperclass를 상속하고 AProtocol을 채택하고 있다
+// AProtocol을 반드시 구현해줘야 해기 때문에 required init() {} 구현했지만
+// ASuperClass 의 지정생성자의 키워드와 똑같기 때문에 override(재정의) 키워드도 선언해 줘야 한다
+class ASubclass: ASuperClass, AProtocol {
+    required override init() {
+        
+    }
+}
+
+//:> 프로토콜 실패가능 생성자
+
+// 실패가능 생성자
+protocol AProto {
+    init?(num: Int)
+}
+
+// 구조체에서 채택(required 키워드는 필요 없음)
+struct AStruct: AProto {
+    
+    // init?(num: Int) {}
+    
+    init(num: Int) {}
+    
+    // init!(num: Int) {}
+    
+}
+
+// 클래스에서 채택(required 키워드 선언해줘야 함)
+class AClass: AProto {
+    required init(num: Int) {}
+}
