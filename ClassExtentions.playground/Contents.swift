@@ -1,4 +1,5 @@
 import UIKit
+import Foundation
 
 //:> 확장(Extensions)
 
@@ -284,4 +285,17 @@ extension Rect {
 
 let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
                       size: Size(width: 3.0, height: 3.0))
+
+
+
+struct CGRect {
+    var x: CGFloat = 0
+    var y: CGFloat = 0
+}
+
+extension CGRect {
+    init(width: CGFloat, height: CGFloat) {
+        self.init(x: 9, y: 9)
+    }
+}
 
