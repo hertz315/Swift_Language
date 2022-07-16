@@ -1,4 +1,5 @@
 import UIKit
+import Darwin
 
 //:> 프로토콜의 필요성 - 클래스와 상속의 단점⭐️
 
@@ -255,3 +256,81 @@ class SmartPhone: RemoteMouse {
     }
     
 }
+
+//:> 메서드의 요구사항 정의
+
+/**===============================================================
+ [프로토콜 메서드 요구사항]
+ - 프로토콜 메서드의 헤드부분(인풋/아웃풋)의 형태만 요구사항으로 정의
+ - mutating 키워드: (구조체로 제한하는 것은 아님) 값 타입 에서 저장 속성 변경하는 경우,
+                  구조체도 채택 가능하도록 허락하는 키워드
+ - 타입 메서드로 제한 하려면, static키워드만 붙이면 됨
+   (채택해서 구현하는 쪽에서 static / class 키워드 모두 사용 가능)
+=================================================================**/
+
+// 1) 정의
+protocol RandomNumber {
+    // 최소한 타입 메서드가 되야함 (class로 구현해서 재정의를 허용하는 것도 가능)
+    // 함수의 헤드부분을 선언해 줘야 한다
+    static func reset ()
+    
+    mutating func multyTen() -> Int
+}
+
+// 2)채택 // 3)구현
+struct Number: RandomNumber {
+
+    var number = 10
+    
+    static func reset() {
+        print("다시 셋팅")
+    }
+    
+    mutating func multyTen() -> Int {
+        self.number *= 10
+        return self.number
+        
+    }
+}
+
+var n = Number()
+n.multyTen()    // 100
+
+// 1)정의
+protocol Togglable {
+    mutating func toggle()
+}
+
+// 2) 채택 / 3) 구현
+enum OnOffSwitch: Togglable {
+    case on
+    case off
+    
+    mutating func toggle() {
+        switch self {
+        case .off:
+            self = .on
+        case .on:
+            self = .off
+        }
+    }
+}
+
+var toggle = OnOffSwitch.on
+toggle.toggle() // 0ff
+toggle.toggle() // on
+
+class BigSwitch: Togglable {
+    var isOn = false
+    
+    func toggle() {
+        isOn = isOn ? false : true
+    }
+}
+
+var big = BigSwitch()
+big.isOn    // false
+big.toggle()
+big.isOn    // true
+big.toggle()
+big.isOn    // false
