@@ -165,3 +165,93 @@ museum1.flyingDemo(flyingObject: myEagle1)
 
 // 프로토콜을 구조체에 채택해서 상속처럼 사용할수 있다 , myPlane1은 구조체 타입이다
 museum1.flyingDemo(flyingObject: myPlane1)
+
+//:> 프로토콜 기본 문법
+
+// 1) 정의
+protocol MyProtocol {
+    // 메서드의 헤드부분만 정의
+    func myInt() -> Int
+}
+
+class FamilyClass {
+    
+}
+
+// 2) 채택 (클래스, 구조체, 열거형 다 가능)
+class MyClass: FamilyClass, MyProtocol {
+    func myInt() -> Int {
+        return 9
+    }
+}
+
+// 2) 채택
+struct MyStruct: MyProtocol {
+    // 3) (속성,메서드) 구체적인 구현
+    func myInt() -> Int {
+        return 9
+    }
+}
+
+/*:
+ ---
+ * 프로토콜의 요구사항의 종류
+ ---
+ */
+/**========================================================================
+ - 프로토콜을 채택하려는 클래스, 구조체, 열거형에 최소한 이런 내용을 구현해야한다고 선언하는 부분
+
+ - 1. 속성 요구사항
+ - 2. 메서드 요구사항 (메서드/생성자/서브스크립트)
+==========================================================================**/
+
+
+
+/*:
+ ## 2-1) 속성의 요구사항 정의하는 방법
+ * 속성 요구사항 정의
+ ---
+ */
+/**=====================================================
+  [프로토콜 속성의 요구사항]
+ - 속성의 뜻에서 var로 선언 (let으로 선언할 수 없음)
+ - get, set 키워드를 통해서 읽기/쓰기 여부를 설정 (최소한의 요구사항일뿐)
+ - 저장 속성/계산 속성으로 모두 구현 가능
+=======================================================**/
+
+protocol RemoteMouse {
+    var id: String { get }
+    // 요구사항을 채택한 타입에서 ===> let 저장속성 / var 저장속성 / 읽기계산속성 / 읽기,쓰기 계산속성 로 구현가능
+    
+    var name: String { get set }
+    // 요구사항을 채택한 타입에서 ===> var 저장속성 / 읽기,쓰기 계산속성 로 구현가능
+    
+    static var type: String { get set }
+    // 요구사항을 채택한 타입에서 ===> var 타입 저장 속성 (static) var 타입 읽기,쓰기 계산 속성(class) 로 구현가능
+    
+}
+
+class SmartPhone: RemoteMouse {
+    
+    let id: String = "456"
+    
+    var name: String {
+        get {
+            return "엘지티비"
+        }
+        set {
+            
+        }
+    }
+    
+    // 타입 계산 속성은 재정의 가능 (class 키워드만 가능)
+    class var type: String {
+        get {
+            return "리모컨"
+        }
+        set {
+            
+        }
+    }
+    
+}
