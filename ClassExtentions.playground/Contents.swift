@@ -320,3 +320,59 @@ extension Int {
 123456789[0] // 9 // 123456789 / 1 = 123456789 % 10 == 9
 123456789[1] // 8 // 123456789 / 10 = 12345678 % 10 == 8
 123456789[2] // 7 // 123456789 / 100 = 1234567 % 10 == 7
+
+
+//:> 멤버의 확정(중첩타입)
+
+// 클래스, 구조체 및 열거형에 새 중첩 유형을 추가 가능
+// Int 에 종류(kin) ===> 중첩 열거형 추가해 보기
+
+extension Int {
+    
+    // 열거형
+    enum Kind {
+        case negative, zero, positive
+    }
+    
+    // 계산 속성
+    var kind: Kind {
+        switch self {
+        case 0:
+            return Kind.zero
+        // x에 바인딩 될수있고 == nil은 바인딩 될수 없다
+        // 바인딩 된 x의 값이 0보다 크다면 Kind.positive를 리턴한다
+        case let x where x > 0:
+            return Kind.positive
+        default:
+            return Kind.negative
+        }
+    }
+    
+}
+
+let a = 1
+// 열거형(Int.Kind)타입을 리턴
+a.kind
+let aa: Int.Kind = a.kind
+
+Int.Kind.negative
+Int.Kind.positive
+Int.Kind.zero
+
+// 위의 확장을 통해서, 어떤 Int값에서도 중첩 열거형이 쓰일수 있다
+
+func printIntegerKind(_ number: Int) -> Int.Kind {
+    
+    switch number.kind {
+    case .zero:
+        print("-\(number)", terminator: "")
+    case .positive:
+        print("+\(number) ", terminator: "")
+    case .negative:
+        print("-\(number)", terminator: "")
+    }
+    print("")
+    return number.kind
+}
+
+printIntegerKind(3) // positive // +3
