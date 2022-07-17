@@ -552,3 +552,84 @@ newBox.turnOn()
 // (범용적인 영역에서 구체적인 영역) 다운캐스팅
 let sbox2 = electronic[1] as! SetTopBox
 sbox2.doNetflix()
+
+//:> 프로토콜 상속
+
+protocol TvRemote {
+    func turnOn()
+    func turnOff()
+}
+
+protocol AirconRemote {
+    func up()
+    func down()
+}
+
+protocol SuperRemoteProtocol: TvRemote, AirconRemote {
+    // func turnOn()
+    // func turnOff()
+    // func up()
+    // func down()
+    
+    func doSomething()
+}
+
+// 프로토콜의 채택 및 구현
+class HomePot: SuperRemoteProtocol {
+    func turnOn() { }
+    
+    func turnOff() { }
+    
+    func up() { }
+    
+    func down() { }
+    
+    func doSomething() { }
+}
+
+//:> 클래스 전용 프로토콜
+
+// AnyObject는 클래스 전용 프로토콜
+// 프로토콜에 AnyObject 프로토콜을 상속하면 AnyObject를 상속한 프로토콜을 클래스에서만 채택할수 있다
+protocol ClassOnlyProtocol: AnyObject {
+    func doSomething()
+}
+
+class AAClass: ClassOnlyProtocol {
+    func doSomething() {
+        print("Do something")
+    }
+}
+
+//:> 프로토콜 합성
+
+protocol Named {
+    var name: String {get}
+}
+
+protocol Aged {
+    var age: Int {get}
+}
+
+// 하나의 타입에서 여러개의 프로토콜을 채택하는 것은 당연히 가능
+struct ProtocolPerson: Named, Aged {
+    var name: String
+    
+    var age: Int
+}
+
+// 프로토콜 두개를 병합해서 사용하는 문법 (&로 연결)
+// 프로토콜 타입은 일급객체 이므로 함수의 파라미터로 사용할수 있다
+func wishHappyBirthday(to celebrator: Named & Aged) {
+    print("생일축하해, \(celebrator.name), 넌 이제 \(celebrator.age) 살이 되었구나!")
+}
+
+// birthdayPerson 타입은 ProtocolPerson 타입이고 ProtocolPerson타입은 프로토콜 Named, Aged 타입을 채택하고 있다
+let birthdayPerson: ProtocolPerson = ProtocolPerson(name: "Tom", age: 27)
+
+birthdayPerson is Named // true
+birthdayPerson is Aged  // true
+birthdayPerson is ProtocolPerson    // true
+
+wishHappyBirthday(to: birthdayPerson)
+// 생일축하해, Tom, 넌 이제 27 살이 되었구나!
