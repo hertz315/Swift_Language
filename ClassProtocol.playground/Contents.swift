@@ -397,3 +397,53 @@ struct AStruct: AProto {
 class AClass: AProto {
     required init(num: Int) {}
 }
+
+//:> 메서드 요구사항 - 서브스크립트 요구사항
+
+/**===================================================================
+ [서브스크립트 요구사항]
+ - get, set 키워드를 통해서 읽기/쓰기 여부를 설정 (최소한의 요구사항일뿐)
+ - get키워드 ===> 최소한 읽기 서브스크립트 구현 / 읽기,쓰기 모두 구현 가능
+ - get/set키워드 ===> 반드시 읽기,쓰기 모두 구현해야함
+ =====================================================================**/
+
+protocol DataList {
+    subscript(index: Int) -> Int { get }
+}
+
+struct DataStruct {
+    
+}
+
+extension DataStruct: DataList {
+    subscript(index: Int) -> Int {
+        get {
+            return 0
+        }
+        set {
+            
+        }
+    }
+    
+}
+
+/*:
+ ---
+ * (관습적인) 프로토콜 채택과 구현 - 확장(Extension)에서
+ ---
+ */
+protocol Certificate {
+    func doSomething()
+}
+
+
+class Person {
+    
+}
+
+// 관습적으로 본체보다는 확장에서, 채택 구현 (코드의 깔끔한 정리 가능)
+extension Person: Certificate {
+    func doSomething() {
+        print("Do something")
+    }
+}
