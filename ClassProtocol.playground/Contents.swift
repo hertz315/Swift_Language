@@ -743,3 +743,41 @@ var iphone2: Remote1 = StructSmartPhone()
 iphone2.turnOn()            // 스마트폰 켜기          // 프로토콜 - W테이블
 iphone2.turnOff()           // 리모컨 끄기           // 프로토콜 - W테이블
 iphone2.doAnotherAction()   // 리모컨 또 다른 동작     // 프로토콜 - Direct (직접 메서드 주소 삽입
+
+//:> 프로토콜 확장의 적용 제한
+// 프로토콜 확장의 형식을 제한 가능
+
+protocol AirRemote {
+    func turnOn()
+    func turnOff()
+}
+
+extension AirRemote {
+    func turnOn() { print("리모컨 켜기") }
+    func turnOff() { print("리모컨 끄기") }
+}
+
+protocol Bluetooth {
+    func blueOn()
+    func blueOff()
+}
+
+/**======================================================
+ - 프로토콜 확장에서 where절을 통해, 프로토콜의 확장의 적용을 제한 할수 있다
+ - "특정 프로토콜"을 채택한 타입에만 프로토콜 확징이 적용되도록 제한 가능
+ - where Self: 특정프로토콜
+ 
+ - 특정 프로토콜을 채택하지 않으면, 프로토콜의 확장이 적용되지 않기 때문에
+   (확장이 없는 것과 동일하게) 메서드를 직접구현 해야함
+ =========================================================**/
+
+// 특정 프로토콜을 채택한 타입에만 프로토콜 확장이 적용되도록 제한
+// (AirRemote 프로토콜을 채택한 타입만 확장 적용 가능)
+extension Bluetooth where Self: AirRemote {
+    func blueOn() { print("블루투스 켜기") }
+    func blueOff() { print("블루투스 끄기") }
+}
+
+struct smartPhone: Bluetooth, AirRemote {
+    
+}
