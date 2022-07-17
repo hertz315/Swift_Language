@@ -447,3 +447,108 @@ extension Person: Certificate {
         print("Do something")
     }
 }
+
+//: 프로토콜은 타입이다
+
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+class TV: Remote {
+    func turnOn() {
+        print("TV켜기")
+    }
+    
+    func turnOff() {
+        print("TV끄기")
+    }
+    func volumeUp() {
+        print("볼륨 업")
+    }
+}
+
+struct SetTopBox: Remote {
+    func turnOn() {
+        print("셋톱박스켜기")
+    }
+    func turnOff() {
+        print("셋톱박스끄기")
+    }
+    func doNetflix() {
+        print("넷플릭스 하기")
+    }
+}
+
+let tv = TV()
+tv.turnOff()
+tv.turnOn()
+tv.volumeUp()
+
+let sbox = SetTopBox()
+sbox.turnOn()
+sbox.turnOff()
+sbox.doNetflix()
+
+//:> 프로토콜 타입 취급의 장점
+
+// ⭐️ 프로토콜 타입 취급의 장점 -- 1
+// 프로토콜을 변수의 타입으로 할당 할수 있다
+
+// 상수 electronic 에는 Remote프로토콜 타입의 배열이 담겨있다
+// tv, sbox는 각각 Remote프로토콜을 채택했기때문에 Remote타입이다 그러므로 electronic 상수에 담길수 배열형태로 담길수 있다
+let electronic: [Remote] = [tv, sbox]
+
+for item in electronic {
+    // Remote프로토콜에 있는 멤버만 사용 가능
+    item.turnOn()
+}
+
+
+// ⭐️ 프로토콜 타입 취급의 장점 -- 2
+// 프로토콜을 함수의 파라미터로 전달 할수 있다
+func turnOnSomeElectronics(item: Remote) {
+    item.turnOn()
+}
+
+turnOnSomeElectronics(item: tv)
+turnOnSomeElectronics(item: sbox)
+
+
+// ⭐️ 프로토콜 타입 취급의 장점 -- 3
+// 프로토콜을 함수의 반환 타입으로 할수 있다
+
+//:> 프로토콜 준수성 검사
+
+/**==================================================================================
+ - is / as 연산자 사용가능
+
+ - is 연산자 ===> 특정 타입이 프로토콜을 채택하고 있는지 확인 (참 또는 거짓) / 그 반대도 확인가능
+ - as 연산자 ===> 타입 캐스팅 (특정 인스턴스를 프로토콜로 변환하거나, 프로토콜을 인스턴스 실제형식으로 캐스팅)
+====================================================================================**/
+
+// 1) is연산자
+
+// 특정타입이 프로토콜을 채택하고 있는지 확인
+tv is Remote    // true
+sbox is Remote  // true
+
+// 프로토콜 타입으로 저장된 인스턴스가 더 구체적인 타입인지 확인 가능
+// let electronic: [Remote] = [tv, sbox]
+
+electronic[0] is TV // true
+electronic[1] is TV // false
+electronic[1] is SetTopBox  // true
+
+// 2) as연산자
+
+// 업캐스팅(as)
+// (구체적인 영역에서 범용적인 영역) 업캐스팅
+let newBox = sbox as Remote
+newBox.turnOff()
+newBox.turnOn()
+
+// 다운캐스팅(as?/as!)
+// (범용적인 영역에서 구체적인 영역) 다운캐스팅
+let sbox2 = electronic[1] as! SetTopBox
+sbox2.doNetflix()
