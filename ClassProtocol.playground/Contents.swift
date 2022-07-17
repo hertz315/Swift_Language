@@ -668,3 +668,78 @@ print(switchRemote.isOn)    // nil
 // (선택적으로 선언했기 때문에, 함수가 없을 수도 있음 ===> 옵셔널체이닝 필요)
 let switchRemote2: SwitchRemote = Switch()
 switchRemote2.doNetflix?()  // nil
+
+//:> 프로토콜의 확장
+
+protocol Remote1 {
+    func turnOn()
+    func turnOff()
+}
+
+extension Remote1 {
+    
+    // Remote1 요구사항 메서드 구현
+    func turnOn() { print("리모컨 켜기") }
+    func turnOff() { print("리모컨 끄기") }
+    
+    // Remote1 프로토콜 요구사항에 없는 메서드
+    func doAnotherAction() {
+        print("리모컨 또 다른 동작")
+    }
+}
+
+//:> 프로토콜의 확장을 통한 다형성 제공
+class Ipad: Remote1 {
+    func turnOn() {
+        print("아이패드 켜기")
+    }
+    
+    func doAnotherAction() {
+        print("아이패드 다른 동작")
+    }
+}
+
+/**=================================================
+ [Class Virtual 테이블]
+ - func turnOn()          { print("아이패드 켜기") }
+ - func turnOff()         { print("리모컨 끄기") }
+ - func doAnotherAction() { print("아이패드 다른 동작") }
+====================================================**/
+
+let ipad: Ipad = Ipad()
+ipad.turnOn()   // 아이패드 켜기  // 클래스 - V테이블
+ipad.turnOff()  // 리모컨 끄기   // 클래스 - V테이블
+ipad.doAnotherAction()  // 아이패드 다른 동작   // 클래스 - V테이블
+
+/**=====================================
+ [Protocol Witness 테이블] - 요구사항
+ - func turnOn()  { print("아이패드 켜기") }
+ - func turnOff() { print("리모콘 끄기") }
+========================================**/
+
+// Ipad() 클래스 업캐스팅하여 Remote1 프로토콜 타입으로 저장
+let ipad2: Remote1 = Ipad()
+ipad2.turnOn()          // 아이패드 켜기       // 프로토콜 - W테이블
+ipad2.turnOff()         // 리모컨 끄기        // 프로토콜 - W테이블
+ipad2.doAnotherAction() // 리모컨 또 다른 동작  // 프로토콜 - Direct (직접 메서드 주소 삽입)
+
+// 구조체
+
+struct StructSmartPhone: Remote1 {
+    func turnOn() {
+        print("스마트폰 켜기")
+    }
+    func doAnotherAction() {
+        print("스마트폰 다른 동작")
+    }
+}
+
+var iphone: StructSmartPhone = StructSmartPhone()
+iphone.turnOn()             // 스마트폰 켜기          // 구조체 - Direct
+iphone.turnOff()            // 리모컨 끄기           // 구조체 - Direct
+iphone.doAnotherAction()    // 스마트폰 다른 동작      // 구조체 - Direct
+
+var iphone2: Remote1 = StructSmartPhone()
+iphone2.turnOn()            // 스마트폰 켜기          // 프로토콜 - W테이블
+iphone2.turnOff()           // 리모컨 끄기           // 프로토콜 - W테이블
+iphone2.doAnotherAction()   // 리모컨 또 다른 동작     // 프로토콜 - Direct (직접 메서드 주소 삽입
