@@ -633,3 +633,38 @@ birthdayPerson is ProtocolPerson    // true
 
 wishHappyBirthday(to: birthdayPerson)
 // 생일축하해, Tom, 넌 이제 27 살이 되었구나!
+
+//:> 프로토콜 선택적인 구현
+
+/**=====================================================================
+ - @objc는 스위프트로 작성한 코드를 오브젝티브C 코드에서도 사용할 수 있게 해주는 어트리뷰트
+ - 프로토콜에서 요구사항 구현시, 반드시 강제하는 멤버가 아니라 선택적인 요구사항으로 구현할때 사용
+ 
+ - 프로토콜 앞에는 "@objc"추가
+ - 멤버 앞에는 "@objc optional"을 모두 추가
+=========================================================================**/
+
+// 1) 프로토콜 앞에는 @objc 추가
+@objc protocol SwitchRemote {
+    // 2) 프로토콜 멤버 앞에는 @objc optional 추가
+    @objc optional var isOn: Bool {get set}
+    func tunrOn()
+    func turnOff()
+    // 2) 프로토콜 멤버 앞에는 @objc optional 추가
+    @objc optional func doNetflix()
+}
+
+class Switch: SwitchRemote {
+    
+    func tunrOn() {}
+    
+    func turnOff() {}
+}
+
+let switchRemote: SwitchRemote = Switch()
+// Bool? 타입 (선택적 구현 사항이기 때문에 해당 멤버가 없으면 ===> nil로 반환)
+print(switchRemote.isOn)    // nil
+
+// (선택적으로 선언했기 때문에, 함수가 없을 수도 있음 ===> 옵셔널체이닝 필요)
+let switchRemote2: SwitchRemote = Switch()
+switchRemote2.doNetflix?()  // nil
