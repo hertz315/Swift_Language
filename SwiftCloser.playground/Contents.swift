@@ -38,3 +38,41 @@ let closureType = { (param: String) -> String in
 }
 // 사용(실행)
 closureType("Tom")  // "Tom!!"
+
+//:> 함수와 클로저의 형태 비교
+
+// 함수의 형태
+func add(a: Int, b: Int) -> Int {
+    let result = a + b
+    return result
+}
+
+// 클로저의 형태
+let _ = {(a: Int, b: Int) -> Int in
+    let result = a + b
+    return result
+}
+
+// 타입 추론이 가능할 경우 클로저를 축약 할수 있다
+let _: (Int, Int) -> Int = {(a,b) in
+    let result = a + b
+    return result
+}
+
+//:> 클로저의 형태
+// 가장 많이 사용하는 형태: 리턴형에 대한 표기를 생략 가능
+
+let aClosure1 = { (str: String) in
+    return "Hello, \(str)"
+}
+
+let aClosure2: (String) -> String = {(str) in
+    return "Hello, \(str)"
+}
+
+let aClosure3 = {print("This is a closure.")}
+
+// 파라미터의 타입의 생략도 대부분 가능하다
+let closure4 = { str in
+    return str + "!"
+}
