@@ -1,5 +1,6 @@
 import UIKit
 import os
+import Darwin
 
 //:> 클로저 - 이름이 없는(익명) 함수
 
@@ -223,3 +224,69 @@ performClosure() {
 // 소괄호를 생략 가능
 performClosure { $0.count }
 
+
+//:> 클로저의 갭쳐
+var stored = 0
+
+let captureClosure: (Int) -> Int = {
+    stored += $0
+    return stored
+}
+
+captureClosure(3)   // 3
+
+captureClosure(5)   // 8
+
+captureClosure(10)  // 18
+
+stored = 0
+
+captureClosure(5)   // 5
+
+//:> 캡쳐 현상
+
+// 함수 내에서 함수를 실행하고, 값을 리턴하는 일반적인 함수
+
+func calculate(number: Int) -> Int {
+    var sum = 0
+    
+    func square(num: Int) -> Int {
+        sum += (num * num)
+        return sum
+    }
+    
+    let result = square(num: number)
+    
+    return result
+}
+
+calculate(number: 10)   // 100
+calculate(number: 20)   // 400
+calculate(number: 30)   // 900
+
+// 변수를 캡처하는 함수
+// (함수/클로저를 변수에 저장하는 시점에 캡쳐
+func calculateFunc() -> ((Int) -> Int) {
+    
+    var sum = 0
+    
+    func square(num: Int) -> Int {
+        sum += (num * num)
+        return sum
+    }
+    
+    return square
+}
+
+// 변수에 저장하는 경우(Heap 메모리에 유지)
+var squareFunc = calculateFunc()
+
+squareFunc(10)  // 100
+squareFunc(20)  // 500
+squareFunc(30)  // 1400
+
+// 변수에 저장하지 않는 경우
+// (Heap메모리에 유지하지 않음)
+calculateFunc()(10) // 100
+calculateFunc()(20) // 400
+calculateFunc()(30) // 900
