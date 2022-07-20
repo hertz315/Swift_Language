@@ -127,3 +127,99 @@ closureCaseFunction(a: 20, b: 20) {(n) in
     print("출력")
     print("값: \(n)")
 }
+
+//:> 클로저의 문법 최적화
+/**=============================================================================
+ [문법 최적화(간소화)]
+ - 1) 문맥상에서 파라미터와 리턴밸류 타입 추론(Type Inference)
+ - 2) 싱글 익스프레션인 경우(한줄), 리턴을 안 적어도 됨(Implicit Return)
+ - 3) 아규먼트 이름을 축약(Shorthand Argements) ===> $0, $1
+ - 4) 트레일링 클로저 문법: 함수의 마지막 전달 인자(아규먼트)로 클로저 전달되는 경우, 소괄호를 생략 가능
+ ===============================================================================**/
+
+// 1) 트레일링 클로저 - 후행 클로저
+
+// 클로저를 파라미터로 받는 함수 정의
+func closureParamFunction(closure: () -> Void) {
+    print("프린트 시작")
+    closure()
+}
+
+// 함수를 실행할때 클로저 형태로 전달
+closureParamFuction(closure: {
+    print("프린트 종료")
+})
+
+// 소괄호를 앞으로 가져 오기
+closureParamFuction(closure: ) {
+    print("프린트 종료")
+}
+
+// 아규먼트 생략가능
+closureParamFuction() {
+    print("프린트 종료")
+}
+
+// 소괄호를 아예 생략할 수 있다
+// 아래 형태가 함수를 실행하고 마지막 아규먼트로 클로저를 전달했다는 형태
+closureParamFuction {
+    print("프린트 종료")
+}
+
+//연습
+
+// 1) (함수를 파라미터로 받는 함수) 정의
+func closureCaseFunction1(a: Int, b: Int, closure: (Int) -> Void ) {
+    let c = a + b
+    closure(c)
+}
+
+// 2) 함수를 실행할때 클로저 형태로 전달
+// 소괄호 앞으로 가져오기
+// 소괄호 생략 가능
+// 야규먼트 생략 가능
+
+closureCaseFunction1(a: 5, b: 5) { number in
+    print("출력: \(number)")
+}
+
+// 파라미터 및 생략 등의 간소화
+
+// 함수의 정의
+func performClosure(param: (String) -> Int) {
+    param("Swift")
+}
+
+// 문법을 최적화(간소화) 하는 과정
+// 1) 타입 추론(Type Inference)
+performClosure(param: { (str: String) -> Int in
+    return str.count
+})
+
+performClosure(param: { str in
+    return str.count
+})
+
+// 2) 한줄인 경우, 리턴을 안 적어도 됨(Implicit Return)
+performClosure(param: { str in
+    str.count
+})
+
+// 3) 아규먼트 이름을 축약(Short and Arguments)
+performClosure(param: {
+    $0.count
+})
+
+// 4) 트레일링 클로저
+performClosure(param: {
+    $0.count
+})
+
+// 파라미터 생략 가능
+performClosure() {
+    $0.count
+}
+
+// 소괄호를 생략 가능
+performClosure { $0.count }
+
