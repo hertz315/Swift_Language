@@ -342,3 +342,11 @@ var num = 1
 // someFunction(closure: <#T##Bool#>)
 someFunction(closure: num == 1)
 // "참입니다"
+
+let swift: Int = {(a: Int) -> Int in
+    let triple = a * a * a
+    print(triple)
+    return triple
+}(3)
+
+
