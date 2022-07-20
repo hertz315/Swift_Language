@@ -290,3 +290,55 @@ squareFunc(30)  // 1400
 calculateFunc()(10) // 100
 calculateFunc()(20) // 400
 calculateFunc()(30) // 900
+
+//:> @escaping 키워드
+
+// 1) 클로저를 단순 실행 (non-escaping)
+func performEscaping(closure: () -> Void) {
+    print("프린트 시작")
+    closure()
+}
+
+performEscaping {
+    print("프린트 중간")
+    print("프린트 종료")
+}
+
+// 2) 클로저를 외부변수에 저장 (@escaping 필요)
+/**===========================================
+ @escaping 사용의 대표적인 경우
+ - 1) 어떤 함수의 내부에 존재하는 클로저(함수)를 외부 변수에 저장
+ - 2) GCD (비동기 코드의 사용)
+ =============================================**/
+
+var aSavedFunction: () -> Void = { print("Tom") }
+ 
+
+func performEscaping1(closure: @escaping () -> Void) {
+    // 클로저를 실행하는 것이 아니라 클로저를 외부 변수에 저장
+    aSavedFunction = closure
+}
+
+aSavedFunction()    // "Tom"
+
+performEscaping1 {
+    print("Tom Jerry")
+}
+
+aSavedFunction()    // "Tom Jerry"
+
+//:> @autoclosure 키워드
+func someFunction(closure: @autoclosure () -> Bool) {
+    if closure() {
+        print("참입니다")
+    } else {
+        print("거짓입니다")
+    }
+}
+
+var num = 1
+
+
+// someFunction(closure: <#T##Bool#>)
+someFunction(closure: num == 1)
+// "참입니다"
