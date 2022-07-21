@@ -410,3 +410,65 @@ var result = numbersArray
 
 print(result)
 // 165
+
+//:> 기타 고차함수
+// forEach 함수
+/**====================================================
+ - 기존 배열 등의 각 아이템을 활용해서
+   각 아이템별로 특정 작업(작업 방식은 클로저가 제공)을 실행
+ - (각 아이템을 활용해서 각각 특정 작업을 실행할때 사용)
+ ======================================================**/
+
+let immutableArray = ["A", "B", "C", "D"]
+
+immutableArray.forEach { grade in
+    print("학점의 종류: \(grade)")
+}
+// 학점의 종류: A
+// 학점의 종류: B
+// 학점의 종류: C
+// 학점의 종류: D
+
+// compactMap 함수
+/**====================================================
+ - 기존 배열 등의 각 아이템을 새롭게 매핑해서(매핑방식은 클로저가 제공)
+   변형하되, 옵셔널 요소는 제거하고, 새로운 배열을 리턴
+ - (map + 옵셔널제거)
+ - 옵셔널은 빼고, 컴팩트(compact)하게
+ - (옵셔널 바인딩의 기능까지 내장)
+ ======================================================**/
+
+let stringArray: [String?] = ["A", nil, "B", nil, "C"]
+print(stringArray)
+// [Optional("A"), nil, Optional("B"), nil, Optional("C")]
+
+let newStringArray = stringArray.compactMap { $0 }
+print(newStringArray)
+// ["A", "B", "C"]
+
+let numbers: [String] = ["-2", "-1", "0", "1", "2"]
+let positiveNumbers = numbers
+    .map{ Int($0) }
+    // [Optional(-2), Optional(-1), Optional(0), Optional(1), Optional(2)]
+    .compactMap{ $0 }
+    // [-2, -1, 0, 1, 2]
+    .compactMap{ $0 >= 0 ? $0 : nil }
+    // [0, 1, 2]
+
+// flatMap 함수
+/**====================================================
+ - 중첩된 배열의 각 배열을 새롭게 매핑해서(매핑방식은 클로저가 제공)
+ - 내부 중첩된 배열을 제거하고 리턴
+ - (중첩배열을 flat하게 매핑)
+ ======================================================**/
+
+var nestedArray = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+print(nestedArray.flatMap{$0})
+// [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+var newNnestedArray = [[[1,2,3], [4,5,6], [7, 8, 9]], [[10, 11], [12, 13, 14]]]
+var newNumbersArray = newNnestedArray
+    .flatMap{$0}
+    .flatMap{$0}
+print(newNumbersArray)
+// [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
