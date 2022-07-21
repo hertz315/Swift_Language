@@ -349,4 +349,53 @@ let swift: Int = {(a: Int) -> Int in
     return triple
 }(3)
 
+//:> filter함수
+/**====================================================
+ - 기존 배열 등의 각 아이템을 조건(조건은 클로저가 제공)을
+   확인후, 참(true)을 만족하는 아이템을 걸러내서 새로운 배열을 리턴
+ - (각 아이템을 필터링해서, 걸러내서 새로운 배열을 만들때 사용)
+ ======================================================**/
+// 문자열 배열
+let names = ["Apple", "Black", "Circle", "Dream", "Blue"]
+
+var newNames: [String] = names.filter {$0.contains("e")}
+
+print(newNames)
+// ["Apple", "Circle", "Dream", "Blue"]
+
+// 숫자 배열
+let array = [1, 2, 3, 4, 5, 6, 7, 8]
+
+var evenNumbersArray = array.filter { num in
+    return num % 2 == 0
+}
+
+print(evenNumbersArray)
+// [2, 4, 6, 8]
+
+// 함수로 전달해보기
+func isOdd(_ num: Int) -> Bool {
+    return num % 2 != 0
+}
+
+let oddNumberArray = array.filter(isOdd)
+print(oddNumberArray)
+// [1, 3, 5, 7]
+
+//:> reduce함수
+/**====================================================
+ - 기존 배열 등의 각 아이템을 클로저가 제공하는 방식으로 결합해서
+   마지막 결과값을 리턴(초기값 제공할 필요)
+ - (각 아이템을 결합해서 단 하나의 값으로 리턴)
+ ======================================================**/
+
+var numbersArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+var resultSum = numbersArray.reduce(0) { a, b in
+    return a + b
+}
+print(resultSum)    // 55
+
+resultSum = numbersArray.reduce(100) {$0 - $1}
+print(resultSum)    // 45
 
