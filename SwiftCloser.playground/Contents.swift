@@ -399,3 +399,14 @@ print(resultSum)    // 55
 resultSum = numbersArray.reduce(100) {$0 - $1}
 print(resultSum)    // 45
 
+//:> map / filter / reduce 의 활용
+// 위의 배열 중에, 홀수만 제곱해서, 그 숫자를 다 더한 값은 ?
+numbersArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+var result = numbersArray
+    .filter{ $0 % 2 != 0 }
+    .map{ $0 * $0 }
+    .reduce(0) { $0 + $1 }
+
+print(result)
+// 165
