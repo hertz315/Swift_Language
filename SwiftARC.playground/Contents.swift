@@ -282,11 +282,11 @@ var z = SomeClass()
 
 
 
-let refTypeCapture1 = { [weak z] in
-    print("참조 출력값(캡처리스트):", z?.num)
-}
+//let refTypeCapture1 = { [weak z] in
+//    print("참조 출력값(캡처리스트):", z?.num ?? <#default value#>)
+//}
 
-refTypeCapture1()                        // Optional(0)
+//refTypeCapture1()                        // Optional(0)
 
 
 
@@ -313,14 +313,14 @@ let captureBinding = { [z = s] in   // 내부에서 변수명 바꿔서 사용�
 }
 
 
-let captureWeakBinding = { [weak z = s] in
-    print("Weak 바인딩 경우:", z?.num)
-}
+//let captureWeakBinding = { [weak z = s] in
+//    print("Weak 바인딩 경우:", z?.num)
+//}
 
 
 
 captureBinding()
-captureWeakBinding()
+//captureWeakBinding()
 
 //:> 객체 내에서 클로저의 사용
 // 일반적인 클로저의 사용 (객체 내에서의 사용, self키워드)
@@ -384,3 +384,94 @@ person111 = nil
 // Person111 객체 해제 시점
 
 
+//:> 강한 참조 사이클로 인한 메모리 누수
+class Animal {
+    var name = "치타"
+
+    var run: (() -> Void)?
+
+    func walk() {
+        print("\(self.name)가 걷는다")
+    }
+
+    func saveClosure() {
+        run = {
+            print("\(self.name) 가 뛴다")
+        }
+    }
+
+    deinit {
+        print("Animal 객체 메모리 해제")
+    }
+}
+
+func something() {
+    var chita: Animal? = Animal()
+    chita?.saveClosure()
+}
+//:> 캡처리스트 실제 사용 예시
+// Strong Reference(강한 참조)의 경우
+class ViewController: UIViewController {
+    
+    var name: String = "뷰컨"
+    
+    func doSomething() {
+        DispatchQueue.global().async {
+            sleep(3)
+            print("글로벌큐에서 출력하기: \(self.name)")
+        }
+    }
+    
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+func localScopeFunction() {
+    let vc = ViewController()
+    vc.doSomething()
+}
+
+localScopeFunction()
+// (3초후)
+// 글로벌큐에서 출력하기: 뷰컨
+// 뷰컨 메모리 해제
+/**=======================================================
+ - (글로벌큐)클로저가 강하게 캡처하기 때문에, 뷰컨트롤러의 RC가 유지되어
+    로컬 함수의 영역에서 뷰컨트롤러를 가르키는 변수가 해제되었음에도,
+    3초뒤에 출력하고 난 후 실제 뷰컨트롤러가 해제됨
+    (강한 참조 순환이 일어나진 않지만, 뷰컨트롤러가 필요없음에도 오래 머무름)
+=========================================================**/
+
+//:> 약한 참조의 경우
+class ViewController1: UIViewController {
+    
+    var name: String = "뷰컨"
+    
+    func doSomething() {
+        // 강한 참조 사이클이 일어나지 않지만, 굳이 뷰컨트롤러를 길게 잡아둘 필요가 없다면
+        // weak self로 선언
+        DispatchQueue.global().async { [weak self] in
+            //guard let weakSelf = self else { return }
+            sleep(3)
+            print("글로벌큐에서 출력하기: \(self?.name)")
+        }
+    }
+    
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+
+func localScopeFunction1() {
+    let vc = ViewController1()
+    vc.doSomething()
+}
+
+
+localScopeFunction1()
+
+// 뷰컨 메모리 해제
+// (3초후)
+// 글로벌큐에서 출력하기: nil
