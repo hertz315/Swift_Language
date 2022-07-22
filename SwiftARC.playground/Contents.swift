@@ -321,3 +321,66 @@ let captureWeakBinding = { [weak z = s] in
 
 captureBinding()
 captureWeakBinding()
+
+//:> 객체 내에서 클로저의 사용
+// 일반적인 클로저의 사용 (객체 내에서의 사용, self키워드)
+class Dog111 {
+    var name = "초코"
+    
+    func doSomething() {
+        // 비동기적으로 실행하는 클로저
+        // 해당 클로저는 오래동안 저장할 필요가 있음 ==> 새로운 스택을 만들어서 실행하기 때문
+        DispatchQueue.global().async {
+            print("나의 이름은 \(self.name) 입니다.")
+        }
+    }
+}
+    
+var choco = Dog111()    // RC: 1 // choco -> Dog111(객체)
+choco.doSomething()     // RC: 2 // DispatchQueue.global().async 클로저 -> Dog111(객체)
+                        // 클로저의 실행이 종료되어 스택프레임에서 클로저를 가르키는 메모리주소가 사라지면 RC 카운트더 1 제거된다
+
+//:> 캡처리스트 + weak / unowned
+class Person111 {
+    var name = "Tom"
+    
+    func sayMyName() {
+        print("나의 이름은 \(self.name)입니다.")
+    }
+    
+    func sayMyName1() {
+        DispatchQueue.global().async {
+            print("나의 이름은 \(self.name)입니다.")
+        }
+    }
+    
+    func sayMyName2() {
+        DispatchQueue.global().async { [weak self] in
+            print("나의 이름은 \(self?.name ?? "wiki")입니다.")
+        }
+    }
+    
+    func sayMyName3() {
+        DispatchQueue.global().async { [weak self] in
+            guard let weakSelf = self else { return }
+            // 가드문 처리 ==> 객체없으면 일종료
+            print("나의 이름은 \(weakSelf.name)입니다.(가드문)")
+        }
+    }
+    
+    deinit {
+        print("Person111 객체 헤제 시점")
+    }
+}
+    
+var person111: Person111? = Person111() // Person111객체 RC: 1
+
+person111?.sayMyName()
+person111?.sayMyName1() // Person111 객체 RC: 2 -> 클로저 스택프레임에서 사라지면 RC: 1
+person111?.sayMyName2() // Person111 객체 RC: 2 -> 클로저 스택프레임에서 사라지면 RC: 1
+person111?.sayMyName3() // Person111 객체 RC: 2 -> 클로저 스택프레임에서 사라지면 RC: 1
+
+person111 = nil
+// Person111 객체 해제 시점
+
+
