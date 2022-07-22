@@ -202,3 +202,122 @@ ownerTom11?.pet = wiki11
 // 1) 에러발생하는 케이스
 // ownerTom11 = nil
 // wiki11?.owner   // nil로 초기화 되지않고 error 발생
+
+//:> 클로저 캡쳐리스트 weak / unowned
+// 캡쳐 리스트 형태
+/**===========================================================
+ - 1) 파라미터가 없는 경우
+
+     { [캡처리스트] in
+
+     }
+
+
+ - 2) 파라미터가 있는 경우
+
+     { [캡처리스트] (파라미터) -> 리턴형 in
+
+     }
+ =============================================================**/
+
+// 밸류(Value)타입 캡처와 캡처리스트
+// 클로저는 자신이 사용할 외부의 변수를 캡처함
+var num = 1
+
+let valueCaptureClosure = {
+    print("밸류값 출력(캡쳐): \(num)")
+}
+
+num = 7
+valueCaptureClosure() // 밸류값 출력(캡쳐): 7
+// 밸류타입의 참조(메모리주소)를 캡처함
+// (즉, 값 자체를 복사해서 가지고 있는 것이 아니고, num 변수의 주소를 캡쳐해서 계속 사용함)
+
+num = 3
+valueCaptureClosure() // 밸류값 출력(캡쳐): 3
+
+let valueCaptureListClosure = { [num] in
+    print("밸류값 출력(캡쳐리스트): \(num)")
+}
+
+num = 7
+valueCaptureListClosure() // 밸류값 출력(캡쳐리스트): 3
+// 밸류타입의 값을 캡처함
+// (즉, 값 자체를 복사해서 가지고 계속 사용)
+
+// 즉, 값 타입에서는 참조하는 값의 변경을 방지(외부적인 요인에 의한)하고 사용하고자 할때, 사용
+
+//:> 참조(Reference)타입 캡처와 캡처리스트
+class SomeClass {
+    var num = 0
+}
+
+var x = SomeClass()
+var y = SomeClass()
+
+print("참조 초기값(시작값): ", x.num, y.num)
+
+
+/**============================================
+  x - (참조타입) 주소값 캡처, x를 직접참조로 가르킴
+  y - 변수를 캡처해서, y변수를 가르킴(간접적으로 y도 동일)
+==============================================**/
+
+let refTypeCapture = { [x] in
+    print("참조 출력값(캡처리스트): ", x.num, y.num)
+}
+
+x.num = 1
+y.num = 1
+
+print("참조 초기값(숫자변경후):", x.num, y.num)      // 1, 1
+
+refTypeCapture()                                // 1, 1     (Not) 0, 1
+
+print("참조 초기값(클로저실행후):", x.num, y.num)     // 1, 1
+
+
+// 강한 참조 사이클 문제의 해결 - 캡쳐리스트 + weak / unowned
+var z = SomeClass()
+
+
+
+let refTypeCapture1 = { [weak z] in
+    print("참조 출력값(캡처리스트):", z?.num)
+}
+
+refTypeCapture1()                        // Optional(0)
+
+
+
+let refTypeCapture2 = { [unowned zz = z] in
+    print("참조 출력값(캡처리스트):", zz.num)
+}
+
+refTypeCapture2()                        // 0
+
+
+
+
+/*:
+ ---
+ * 캡처리스트에서 바인딩하는 것도 가능
+ ---
+ */
+
+var s = SomeClass()
+
+
+let captureBinding = { [z = s] in   // 내부에서 변수명 바꿔서 사용가능 (외부변수와 헷갈리는 것을 방지)
+    print("바인딩의 경우:", z.num)
+}
+
+
+let captureWeakBinding = { [weak z = s] in
+    print("Weak 바인딩 경우:", z?.num)
+}
+
+
+
+captureBinding()
+captureWeakBinding()
