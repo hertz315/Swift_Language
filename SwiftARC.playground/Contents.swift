@@ -77,3 +77,128 @@ dog1?.name  // 깜둥이
 dog3 = nil
 dog2 = nil
 dog1 = nil  // 깜둥이 메모리 해제 - 출력
+
+//:> 메모리 관리 강한 참조 사이클
+class Cat {
+    var name: String
+    var owner: Person?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Cat 인스턴스 메모리 해제")
+    }
+}
+
+class Person {
+    var name: String
+    var pet: Cat?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Person 인스턴스 메모리 해제")
+    }
+}
+
+var wiki: Cat? = Cat(name: "위키")
+var ownerTom: Person? = Person(name: "Tom")
+
+wiki?.owner = ownerTom
+ownerTom?.pet = wiki
+
+wiki = nil
+ownerTom = nil
+
+/**==========================================
+ - 객체가 서로를 참조하는 강한 참조 사이클로 인해
+ - 변수의 참조에 nil을 할당해도 메모리 해제가 되지 않는
+ - 메모리 누수(Memory Leak)의 상황이 발생
+=============================================**/
+
+// 약한 참조(Weak Reference)
+class Cat1 {
+    var name: String
+    weak var owner: Person1?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Cat1 객체 메모리 \(name) 해제")
+    }
+}
+
+class Person1 {
+    var name: String
+    weak var pet: Cat1?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Person1 객체 메모리 \(name) 해제")
+    }
+}
+
+var wiki1: Cat1? = Cat1(name: "위키") // RC: 1
+var ownerTom1: Person1? = Person1(name: "Tom")  // RC: 1
+
+wiki1?.owner = ownerTom1    // RC: 카운트 증가하지 않음
+ownerTom1?.pet = wiki1      // RC: 카운트 증가하지 않음
+
+wiki1 = nil
+// Cat1 객체 메모리 위키 해제
+ownerTom1 = nil
+// Person1 객체 메모리 Tom 해제
+// ownerTom1 = nil
+wiki1?.owner    // ownerTom1만 메모리 해제시켰음에도 nil
+
+//:> 비소유 참조(Unowned Reference)
+class Dog11 {
+    var name: String
+    unowned var owner: Person11?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Dog11 객체 메모리 해제")
+    }
+}
+
+class Person11 {
+    var name: String
+    unowned var pet: Dog11?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Person11 객체 메모리 해제")
+    }
+}
+
+var wiki11: Dog11? = Dog11(name: "위키")  // RC: 1 // wiki11 -> Dog11객체
+var ownerTom11: Person11? = Person11(name: "Tom")   // RC: 1 // ownerTom11 -> Person11객체
+
+// 강한 참조 사이클이 일어나지 않음
+wiki11?.owner = ownerTom11
+ownerTom11?.pet = wiki11
+
+//wiki11 = nil
+//ownerTom11 = nil
+
+// 비소유 참조의 경우, 참조하고 있던 인스턴스가 사라지면, nil로 초기화 되지 않고 error 발생
+// nil로 설정하고 접근하면 -> 에러 발생
+// 1) 에러발생하는 케이스
+// ownerTom11 = nil
+// wiki11?.owner   // nil로 초기화 되지않고 error 발생
