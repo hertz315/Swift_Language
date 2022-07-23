@@ -154,3 +154,85 @@ do {
     print("놀이기구 타는 것 불가능")
     
 }
+
+//:> 에러를 던지는 함수를 처리하는 함수
+// 에러정의
+enum SomeError: Error {
+    case aError
+}
+
+// 에러를 던지는 함수 정의(무조건 에러를 던진다고 가정)
+func throwingFunc() throws -> Void {
+    throw SomeError.aError
+}
+
+// 에러의 처리
+do {
+    try throwingFunc()
+} catch {
+    print(error)
+    // aError
+}
+// aError
+
+// 일반적인 함수로 처리
+// 함수 내부에서 do-catch문으로 에러를 처리
+// 즉, 발생한 에러를 catch블럭에서 받아서 알맞은 처리
+
+func handleError() {
+    do {
+        try throwingFunc()
+    } catch {
+        print(error)
+        // aError
+    }
+}
+
+handleError()
+
+//:> throwing함수로 에러 다시 던지기
+// 함수 내에서 에러를 직접처리하지 못하는 경우, 에러를 다시 던질수 있음
+func handleError1() throws -> Void {
+    // do {
+    try throwingFunc()
+    // }
+    // ⭐️ catch블럭이 없어도 error를 밖으로 던질수 있음
+}
+
+do {
+    try handleError1()
+} catch {
+    print(error)
+    // aError
+}
+
+//:> rethrowing함수로 에러 다시 던지기(rethrows 키워드)
+/**================================================================
+ - 에러를 던지는 throwing함수를 파라미터로 받는 경우, 내부에서 다시 에러를 던지기 가능
+ - rethrows키워드 필요 (Rethrowing메서드)
+ ==================================================================**/
+
+// 다시 에러를 던지는 함수(방법1)
+func someFunction1(callback: () throws -> ()) rethrows {
+    // 에러를 다시 던짐(직접 던지지 못함) throw (X)
+    try callback()
+}
+
+
+// 다시 에러를 던지는 함수(방법2) - 에러 변환
+func someFunction2(callback: () throws ->()) rethrows {
+    enum ChangedError: Error {
+        case cError
+    }
+    
+    do {
+        try callback()
+    } catch {
+        // catch구문에서는 throw 가능
+        // 에러를 변환해서 다시 던짐
+        throw ChangedError.cError
+    }
+}
+
+// 실제 에러를 다시던지는(rethrowing)함수를 처리하는 부분
+
