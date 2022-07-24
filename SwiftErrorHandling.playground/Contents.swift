@@ -189,6 +189,7 @@ func handleError() {
 }
 
 handleError()
+// aError
 
 //:> throwing함수로 에러 다시 던지기
 // 함수 내에서 에러를 직접처리하지 못하는 경우, 에러를 다시 던질수 있음
@@ -205,6 +206,7 @@ do {
     print(error)
     // aError
 }
+// aError
 
 //:> rethrowing함수로 에러 다시 던지기(rethrows 키워드)
 /**================================================================
@@ -235,4 +237,75 @@ func someFunction2(callback: () throws ->()) rethrows {
 }
 
 // 실제 에러를 다시던지는(rethrowing)함수를 처리하는 부분
+do {
+    try someFunction1(callback: throwingFunc)
+} catch {
+    print(error)
+}
 
+do {
+    try someFunction2(callback: throwingFunc)
+} catch {
+    print(error)
+}
+// cError
+
+//:> 메서드 / 생성자
+// 메서드 / 생성자에 throw키워드의 적용
+/**=======================================================================
+ - 에러는 1)Throwing함수 뿐만아니라, 2) 메서드와 3)생성자에도 적용 가능
+ - 에러는 던질 수 있는 메서드는 Throwing메서드, 에러는 던질 수 있는 생성자는 Throwing생성자
+ =========================================================================**/
+// 에러 정의
+enum NameError: Error {
+    case noName
+}
+
+// 생성자와 메서드에도 적용 가능
+class Course {
+    var name: String
+    
+    init(name: String) throws {
+        if name == "" {
+            throw NameError.noName
+        } else {
+            self.name = name
+            print("수업을 올바르게 생성")
+        }
+    }
+}
+
+// 에러 처리(생성자에 대한)
+do {
+    let _ = try Course(name: "스위프트")
+} catch NameError.noName {
+    print("이름이 없어 수업이 생성 실패하였습니다")
+}
+
+//:> 생성자와 메서드의 재정의
+class NewCourse: Course {
+    
+    override init(name: String) throws {
+        try super.init(name: name)
+    }
+}
+// 수업을 올바르게 생성
+
+/**=================================================================
+ - Throwing 메서드/생성자는 재정의할 때, 반드시 Throwing메서드/생성자로 재정의해야함
+   (Throwing 메서드/생성자를 일반 메서드/생성자로 재정의 불가)
+
+ - 일반 메서드/생성자를 Throwing 메서드/생성자로 재정의 하는 것은 가능
+   (일반 메서드/생성자의 범위가 더 큼)
+ 
+ [상속관계에서]
+ - (상위) throws    (하위) throws재정의    (O 가능)
+ 
+ - (상위) 일반       (하위) throws재정의    (O 가능)
+   (상위) throws    (하위) 일반재정의       (X 불가능)
+ 
+ - (상위) throws    (하위) rethrows재정의  (O 가능)
+   (상위) rethrows  (하위) throws재정의    (X 불가능)
+
+ - Throwing메서드와 Rethrowing메서드를 비교하면 Rethrowing메서드의 범위가 더 작음
+ ===================================================================**/
